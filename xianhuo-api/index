@@ -1,0 +1,147 @@
+const Koa = require('koa')
+var rp = require('request-promise')
+const Router = require('koa-router')
+var cors = require('koa2-cors')
+const bodyParser = require('koa-bodyparser')
+const Monk = require('monk')
+// 创建一个Koa对象表示web app本身:
+const app = new Koa();
+const router = new Router();
+const db = new Monk('39.108.77.185:27018/xianhuo');//链接到库
+const jobList = db.get('list'); // 工作表
+const company = db.get('company'); // 公司表
+const user = db.get('user'); // 用户表
+
+app.use(bodyParser()) // 解析 request body
+app.use(cors()) // 跨域插件
+// 打印request URL:
+app.use(async (ctx, next) => {
+	console.log(`Process ${ctx.request.method} ${ctx.request.url}...`);
+	await next();
+});
+
+router.get('/', async (ctx) => {
+	ctx.response.type = 'text/html';
+	ctx.body = 'hi'
+})
+
+router.get('/list', async (ctx) => { // 获取工作列表
+	let list = await jobList.find();
+	ctx.response.type = 'application/json';
+	ctx.body = list;
+})
+
+router.get('/list/:id', async (ctx) => { // 按 ID 获取工作
+	let item = await jobList.findOne(ctx.params.id);
+	ctx.response.type = 'application/json';
+	ctx.body = item;
+})
+
+router.get('/list-with-params', async (ctx) => { // 按 条件 获取工作
+	const queryString = ctx.query
+	let res = await jobList.find(queryString);
+	ctx.response.type = 'application/json';
+	ctx.body = res;
+})
+
+router. delete('/list/:id', async (ctx) => { // 按 ID 删除工作
+	let item = await jobList.remove(ctx.params.id);
+	ctx.response.type = 'application/json';
+	ctx.body = item;
+})
+
+
+
+router.post('/list', async (ctx) => { // 新增工作
+	const reqParams = ctx.request.body
+	let obj = {
+		num: reqParams.num || '0',
+		lat: reqParams.lat || '0',
+		lng: reqParams.lng || '0',
+		tel: reqParams.tel || '',
+		city: reqParams.city || '',
+		desc: reqParams.desc || '',
+		date: reqParams.date || '',
+		title: reqParams.title || '',
+		salary: reqParams.salary || '',
+		address: reqParams.address || '',
+		province: reqParams.province || '',
+		requirement: reqParams.requirement || '',
+		company_name: reqParams.company_name || '',
+		company_id: reqParams.company_id || '',
+	}
+
+	// if(!reqParams.lat) {
+	// 	const api = `http://api.map.baidu.com/geocoder/v2/?ak=KMVMX2ByWjGDolZ1M8SYTmHQ&output=json&address=百度大厦&city=北京市`
+	// 	// Request(api, function (error, response, body) {
+	// 	// 	console.log('error:', error); // Print the error if one occurred
+	// 	// 	console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+	// 	// 	console.log('body:', body); // Print the HTML for the Google homepage.
+	// 	// });
+	// 	rp(api)
+	// 		.then(function (htmlString) {
+	// 			// Process html...
+	// 			console.log(htmlString)
+	// 		})
+	// 		.catch(function (err) {
+	// 			// Crawling failed...
+	// 			console.log(err)
+	// 		});
+	// }
+	let saveRes = await jobList.insert(obj)
+	ctx.body = saveRes;
+})
+
+
+router.get('/company/', async (ctx) => { // 获取公司列表
+	let item = await company.find();
+	ctx.response.type = 'application/json';
+	ctx.body = item;
+})
+
+router.get('/company/:name', async (ctx) => { // 按照名称获取公司信息
+	let item = await company.findOne({name: ctx.params.name});
+	ctx.response.type = 'application/json';
+	ctx.body = item;
+})
+
+
+
+router.post('/company', async (ctx) => { // 新增公司
+	const reqParams = ctx.request.body
+	let obj = {
+		name: reqParams.name || '', // 公司
+		scale: reqParams.scale || '', // 规模
+		nature: reqParams.nature || '', // 公司性质
+		is_auth: reqParams.is_auth || '', // 是否认证
+		industry: reqParams.industry || '', // 行业
+		desc: reqParams.desc || '', // 简介
+	}
+	let saveRes = await company.insert(obj)
+	ctx.body = saveRes;
+})
+
+// router.post('/list', async ( ctx ) => {
+// 	const reqParams = ctx.request.body
+//
+// 	let obj = {
+// 		title: reqParams.title || '',
+// 		province: reqParams.province || '',
+// 		city: reqParams.city || '',
+// 		salary: reqParams.salary || '',
+// 		desc: reqParams.desc || '',
+// 		tel: reqParams.tel || '',
+// 	}
+// 	let saveRes = await jobList.insert(obj)
+// 	ctx.body = saveRes;
+// })
+
+
+app.use(router.routes());
+
+// app.listen(9000, '172.18.76.94', () => {
+// 	console.log('[myapp]已经运行，端口为9000')
+// })
+app.listen(9000, () => {
+	console.log('[myapp]已经运行，端口为9000')
+})

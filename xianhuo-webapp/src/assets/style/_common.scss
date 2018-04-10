@@ -1,0 +1,71 @@
+@for $i from 1 through 200 {
+  .m-#{$i} { margin: ($i/100)+rem; }
+  .m-t-#{$i} { margin-top: ($i/100)+rem; }
+  .m-b-#{$i} { margin-bottom: ($i/100)+rem; }
+  .m-l-#{$i} { margin-left: ($i/100)+rem; }
+  .m-r-#{$i} { margin-right: ($i/100)+rem; }
+
+  .p-#{$i} { padding: ($i/100)+rem; }
+  .p-t-#{$i} { padding-top: ($i/100)+rem; }
+  .p-b-#{$i} { padding-bottom: ($i/100)+rem; }
+  .p-l-#{$i} { padding-left: ($i/100)+rem; }
+  .p-r-#{$i} { padding-right: ($i/100)+rem; }
+
+  .fz-#{$i} { font-size: ($i/100)+rem; }
+}
+
+.display-flex {
+  display: flex;
+}
+
+.display-none {
+  display: none !important;
+}
+
+.display-block {
+  display: block !important;
+}
+
+.display-inline-block {
+  display: inline-block;
+}
+
+.flex1 {
+  flex: 1;
+}
+.flex2 {
+  flex: 2;
+}
+.flex3 {
+  flex: 3;
+}
+.flex4 {
+  flex: 4;
+}
+.flex5 {
+  flex: 5;
+}
+
+.position-r {
+  position: relative;
+}
+
+.position-a {
+  position: absolute;
+}
+
+.position-f {
+  position: fixed;
+}
+
+.tc {
+  text-align: center;
+}
+
+.tl {
+  text-align: left;
+}
+
+.tr {
+  text-align: right;
+}
