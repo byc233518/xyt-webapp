@@ -5,7 +5,7 @@
         <input type="text" placeholder="输入关键字进行筛选" @keyup="searchOnChange($event)">
       </div>
       <div class="">
-        <CityPicker></CityPicker>
+        <CityPicker @click="clickHandle"></CityPicker>
       </div>
     </div>
 
@@ -69,6 +69,9 @@
         } else {
           this.list = this.originList
         }
+      },
+      clickHandle() {
+        console.log(11111111111)
       },
     },
     created() {

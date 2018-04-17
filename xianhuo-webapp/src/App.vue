@@ -3,17 +3,17 @@
     <div id="app">
       <router-view/>
     </div>
-    <tabbar>
-    <tabbar-item link="/index">
-      <span slot="label">首页</span>
-    </tabbar-item>
-    <tabbar-item selected link="/list">
-      <span slot="label">列表页</span>
-    </tabbar-item>
+    <!--<tabbar>-->
+    <!--<tabbar-item link="/index">-->
+      <!--<span slot="label">首页</span>-->
+    <!--</tabbar-item>-->
+    <!--<tabbar-item selected link="/list">-->
+      <!--<span slot="label">列表页</span>-->
+    <!--</tabbar-item>-->
     <!--<tabbar-item link="/home">-->
       <!--<span slot="label">个人页</span>-->
     <!--</tabbar-item>-->
-  </tabbar>
+  <!--</tabbar>-->
   </div>
 </template>
 
