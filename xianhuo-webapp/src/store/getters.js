@@ -29,4 +29,7 @@ export default {
   getVtype: (state) => {
     return state.vtype
   },
+  getDirection: (state) => {
+    return state.direction
+  },
 }

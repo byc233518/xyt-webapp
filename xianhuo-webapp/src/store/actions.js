@@ -23,4 +23,7 @@ export default {
   exitApp({ commit }, newSet) {
     commit('exitApp', newSet)
   },
+  updateDirection({ commit }, newSet) {
+    commit('updateDirection', newSet)
+  },
 }

@@ -6,7 +6,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store/index'
 import vux from './vux.install'
-import './assets/style/index.scss';
+import './assets/style/index.css';
 
 Vue.config.productionTip = false
 

@@ -7,10 +7,11 @@ const Monk = require('monk')
 // 创建一个Koa对象表示web app本身:
 const app = new Koa();
 const router = new Router();
-const db = new Monk('0.0.0.0:27018/xianhuo');//链接到库
+const db = new Monk('39.108.77.185:27018/xianhuo');//链接到库
 const jobList = db.get('list'); // 工作表
 const company = db.get('company'); // 公司表
 const user = db.get('user'); // 用户表
+const sha1 = require('sha1')
 
 app.use(bodyParser()) // 解析 request body
 app.use(cors()) // 跨域插件
@@ -24,6 +25,34 @@ router.get('/', async (ctx) => {
 	ctx.response.type = 'text/html';
 	ctx.body = 'hi'
 })
+
+var config={
+	wechat:{
+		appID: 'wx185463cc92b5ca47',
+		appsecret: '81c2262eccfe70810587e6f82face06d',
+		token: '123'
+	}
+}
+
+router.get('/wx', async (ctx) => {
+	console.log(ctx.query)
+	const token = config.wechat.token
+	const signature = ctx.query.signature
+	const nonce = ctx.query.nonce
+	const timestamp = ctx.query.timestamp
+	const echostr = ctx.query.echostr
+
+	const str = [token, timestamp, nonce].sort().join('')
+
+	const sha = sha1(str)
+
+	if (sha === signature) {
+		ctx.body = echostr + ''
+	} else {
+		ctx.body = 'wrong'
+	}
+})
+
 
 router.get('/list', async (ctx) => { // 获取工作列表
 	let list = await jobList.find();
@@ -39,6 +68,12 @@ router.get('/list/:id', async (ctx) => { // 按 ID 获取工作
 
 router.get('/list-with-params', async (ctx) => { // 按 条件 获取工作
 	const queryString = ctx.query
+	let res = await jobList.find(queryString);
+	ctx.response.type = 'application/json';
+	ctx.body = res;
+})
+
+router.get('/getUserInfo', async (ctx) => { // 按 条件 获取工作
 	let res = await jobList.find(queryString);
 	ctx.response.type = 'application/json';
 	ctx.body = res;

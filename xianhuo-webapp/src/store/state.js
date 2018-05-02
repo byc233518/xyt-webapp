@@ -13,5 +13,6 @@ export default {
   navBarShowStatus: true,
   isExitApp: false,
   vtype: null,
-  vTypes: [], // 所有车型
+  vTypes: [],
+  direction: null,
 }

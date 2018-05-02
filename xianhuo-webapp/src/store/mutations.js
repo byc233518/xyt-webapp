@@ -25,4 +25,7 @@ export default {
   exitApp(state, newSet) {
     state.isExitApp = newSet
   },
+  updateDirection(state, newSet) {
+    state.direction = newSet
+  },
 }
