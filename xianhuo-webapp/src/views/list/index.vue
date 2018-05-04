@@ -58,7 +58,6 @@
     </section>
 
     <div class="job-card-wrap">
-      <button onclick="getUserInfo">test getUserInfo</button>
       <div class="job-card" v-for="(item, key) in list" @click="linkTo(`detail/${item._id}`)">
         <dl class="clearfix">
           <dt class="job-card-logo">
