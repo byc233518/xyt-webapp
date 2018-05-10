@@ -1,20 +1,39 @@
-var fs = require('fs')
-var Promise = require('bluebird')
+'use strict'
 
-exports.readFileAsync = function (fpath, encodning) {
-	return new Promise(function (resolve, reject) {
-		fs.readFile(fpath, encodning, function (err, content) {
-			if (err) reject(err)
-			else resolve(content)
-		})
-	})
+const Promise = require('bluebird')
+const crypto = require('crypto')
+
+const fs = Promise.promisifyAll(require('fs'))
+
+const createNonce = () => Math.random().toString(36).substr(2, 15)
+const createTimestamp = () => parseInt(new Date().getTime() / 1000, 10) + ''
+
+exports.readFileAsync = async (fpath, encoding) => await fs.readFileAsync(fpath, encoding)
+exports.writeFileAsync = async (fpath, content) => await fs.writeFileAsync(fpath, content)
+
+const _sign = (noncestr, ticket, timestamp, url) => {
+  let params = [
+    'noncestr=' + noncestr,
+    'jsapi_ticket=' + ticket,
+    'timestamp=' + timestamp,
+    'url=' + url
+  ]
+  let str = params.sort().join('&')
+  let shasum = crypto.createHash('sha1')
+
+  shasum.update(str)
+
+  return shasum.digest('hex')
 }
 
-exports.writeFileAsync = function (fpath, content) {
-	return new Promise(function (resolve, reject) {
-		fs.writeFile(fpath, content, function (err) {
-			if (err) reject(err)
-			else resolve()
-		})
-	})
+exports.sign = (ticket, url) => {
+  var noncestr = createNonce()
+  var timestamp = createTimestamp()
+  var signature = _sign(noncestr, ticket, timestamp, url)
+
+  return {
+    noncestr: noncestr,
+    timestamp: timestamp,
+    signature: signature
+  }
 }

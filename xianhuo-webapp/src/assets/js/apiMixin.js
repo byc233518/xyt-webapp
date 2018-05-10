@@ -1,5 +1,5 @@
 import axois from 'axios'
-import urlencode from 'urlencode'
+// import urlencode from 'urlencode'
 
 const isDebug = false
 const domain = isDebug ? 'http://localhost:9000' : 'http://39.108.77.185:9000'
@@ -134,16 +134,16 @@ const apiMixins = {
       return err
     }
   },
-  async getWxUserInfo() {
-    try {
-      // this.handleReqError(req)
-      const res = await axois.get(`https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx185463cc92b5ca47&redirect_uri=${urlencode(location.href)}&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect`)
-      return res.data
-    } catch (err) {
-      // this.handleCatchError(err)
-      return err
-    }
-  },
+  // async getWxUserInfo() {
+  //   try {
+  //     // this.handleReqError(req)
+  //     const res = await axois.get(`https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx185463cc92b5ca47&redirect_uri=${urlencode(location.href)}&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect`)
+  //     return res.data
+  //   } catch (err) {
+  //     // this.handleCatchError(err)
+  //     return err
+  //   }
+  // },
 }
 
 export default {

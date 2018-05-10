@@ -2,6 +2,7 @@ import {
   AlertPlugin,
   ToastPlugin,
   LoadingPlugin,
+  ConfirmPlugin,
   Msg,
   Rater,
   Tabbar,
@@ -13,12 +14,16 @@ import {
   XInput,
   XButton,
   Selector,
+  FlexboxItem,
+  XTextarea,
+  Group,
 } from 'vux';
 
 const options = {
   AlertPlugin,
   ToastPlugin,
   LoadingPlugin,
+  ConfirmPlugin,
   Msg,
   Rater,
   Tabbar,
@@ -30,6 +35,9 @@ const options = {
   XInput,
   XButton,
   Selector,
+  FlexboxItem,
+  XTextarea,
+  Group,
 };
 /* eslint-disable */
 options.install = (Vue) => {

@@ -55,6 +55,41 @@ const routers = new Router({
         require(['../views/admin'], resolve)
       },
     },
+    {
+      path: '/servicecenter',
+      name: 'servicecenter',
+      component(resolve) {
+        require(['../views/servicecenter'], resolve)
+      },
+    },
+    {
+      path: '/servicecenter/train',
+      name: 'servicecenterTrain',
+      component(resolve) {
+        require(['../views/servicecenter/train'], resolve)
+      },
+    },
+    {
+      path: '/servicecenter/jobhunting',
+      name: 'servicecenterJobhunting',
+      component(resolve) {
+        require(['../views/servicecenter/jobhunting'], resolve)
+      },
+    },
+    {
+      path: '/publishjob',
+      name: 'publishjob',
+      component(resolve) {
+        require(['../views/publishjob'], resolve)
+      },
+    },
+    // {
+    //   path: '/publishjob',
+    //   name: 'publishjob',
+    //   component(resolve) {
+    //     require(['../views/publishjob'], resolve)
+    //   },
+    // },
   ],
 })
 

@@ -15,7 +15,8 @@
               <div class="switch">
                 <span data-selector="switch-btn"><b>职位</b><i class="narrow"></i></span>
                 <div class="switch-pop">
-                  <span><i class="text-icon icon-position"></i><b>职位</b></span> <span><i class="text-icon icon-company"></i><b>公司</b></span>
+                  <span><i class="text-icon icon-position"></i><b>职位</b></span> <span><i
+                  class="text-icon icon-company"></i><b>公司</b></span>
                 </div>
                 <input data-selector="search-type" value="0" type="hidden">
               </div>
@@ -31,34 +32,57 @@
         <div class="filter-box">
           <div class="flexbox">
             <div class="flex-1">
-              <a href="javascript:;" data-selector="city" class="active selected"><span class="ellipsis-1">深圳</span><i class="text-icon icon-narrow-down"></i></a> <input type="hidden" name="dqs" value="050030">
+              <a href="javascript:;" @click="showAdderssPicker" data-selector="city" class="active selected">
+                <span class="ellipsis-1">
+                  <x-address style="display:none;"
+                             hide-district
+                             title="title"
+                             v-model="address"
+                             @on-hide="addressOnChange"
+                             @on-shadow-change="showAddress"
+                             placeholder="请选择地址"
+                             :list="addressData"
+                             :show.sync="showAddressPicker"
+                  ></x-address>
+                </span>
+                {{addressName[1]}}
+                <i class="text-icon icon-narrow-down"></i>
+              </a><input type="hidden" name="dqs" value="050030">
             </div>
             <div class="flex-1">
-              <a href="javascript:;" data-selector="industrys-select" class="active selected"><span class="ellipsis-1">行业不限</span><i class="text-icon icon-narrow-down"></i></a> <input type="hidden" name="industrys" value="150">
+              <a href="javascript:;" data-selector="industrys-select" class="active selected">
+                <popup-picker :data='industrys'
+                              v-model='industry'
+                              @on-change='industryOnChange'
+                ></popup-picker>
+                <!--<span class="ellipsis-1">{{industry}}</span>-->
+                <i class="text-icon icon-narrow-down"></i>
+              </a>
             </div>
-            <div class="flex-1">
-              <a href="javascript:;" data-selector="more"><span class="ellipsis-1">更多</span><i class="text-icon icon-narrow-down"></i></a>
-              <input type="hidden" name="salarylow" value="0">
-              <input type="hidden" name="salaryhigh" value="999">
-              <input type="hidden" name="compScale" value="000">
-              <input type="hidden" name="compKind" value="000">
-              <input type="hidden" name="pubtime" value="000">
-              <input type="hidden" name="jobkind" value="">
+            <!--<div class="flex-1">-->
+              <!--<a href="javascript:;" data-selector="more"><span class="ellipsis-1">更多</span><i-->
+                <!--class="text-icon icon-narrow-down"></i></a>-->
+              <!--<input type="hidden" name="salarylow" value="0">-->
+              <!--<input type="hidden" name="salaryhigh" value="999">-->
+              <!--<input type="hidden" name="compScale" value="000">-->
+              <!--<input type="hidden" name="compKind" value="000">-->
+              <!--<input type="hidden" name="pubtime" value="000">-->
+              <!--<input type="hidden" name="jobkind" value="">-->
 
-              <input type="hidden" name="d_headId" value="6c7d7173834bed34e47390ad98f823a7">
-              <input type="hidden" name="d_ckId" value="6b9b9361b891fd243c9b3681315113d2">
-              <input type="hidden" name="d_sfrom" value="search_prime">
-              <input type="hidden" name="d_curPage" value="0">
-              <input type="hidden" name="d_pageSize" value="60">
-              <input type="hidden" name="siTag" value="om9hg_PdxKRszYCQ1YpArw~zW1lJiASHEwDbI8bVQzcWg">
-            </div>
+              <!--<input type="hidden" name="d_headId" value="6c7d7173834bed34e47390ad98f823a7">-->
+              <!--<input type="hidden" name="d_ckId" value="6b9b9361b891fd243c9b3681315113d2">-->
+              <!--<input type="hidden" name="d_sfrom" value="search_prime">-->
+              <!--<input type="hidden" name="d_curPage" value="0">-->
+              <!--<input type="hidden" name="d_pageSize" value="60">-->
+              <!--<input type="hidden" name="siTag" value="om9hg_PdxKRszYCQ1YpArw~zW1lJiASHEwDbI8bVQzcWg">-->
+            <!--</div>-->
           </div>
         </div>
       </form>
     </section>
 
     <div class="job-card-wrap">
-      <div class="job-card" v-for="(item, key) in list" @click="linkTo(`detail/${item._id}`)">
+      <div class="job-card" v-for="(item, key) in pageData" @click="linkTo(`detail/${item._id}`)">
         <dl class="clearfix">
           <dt class="job-card-logo">
             <img src="https://image0.lietou-static.com/middle_/59255c707032a8e95b0f082106a.jpg" alt=""
@@ -88,7 +112,7 @@
 </template>
 
 <script>
-  import { Tabbar, TabbarItem, Cell, Search } from 'vux'
+  import { Tabbar, TabbarItem, Cell, Search, XAddress, ChinaAddressV4Data, Group, PopupPicker } from 'vux'
   import ApiMixins from '../../assets/js/apiMixin'
   import FnMixins from '../../assets/js/fnMixin'
   import CityPicker from '../../components/common/cityPicker.vue'
@@ -101,12 +125,23 @@
       Cell,
       Search,
       CityPicker,
+      XAddress,
+      ChinaAddressV4Data,
+      Group,
+      PopupPicker,
     },
     data: () => {
       return {
         originList: [],
-        list: [],
+        pageData: [],
         textKey: '',
+        address: [],
+        addressId: [],
+        addressName: [],
+        showAddressPicker: false,
+        addressData: ChinaAddressV4Data,
+        industry: ['全部行业'],
+        industrys: [['全部行业', '服务行业', '建筑行业', '其他行业']],
       }
     },
     computed: {
@@ -118,26 +153,36 @@
       searchOnChange(event) {
         const keyText = event.target.value
         if (keyText) {
-          this.list = _.filter(this.originList, (o) => {
+          this.pageData = _.filter(this.originList, (o) => {
             return o.title.indexOf(keyText) > -1
           })
         } else {
-          this.list = this.originList
+          this.pageData = this.originList
         }
+      },
+      showAdderssPicker() {
+        this.showAddressPicker = true
+      },
+      showAddress(ids, names) {
+        this.addressId = ids
+        this.addressName = names
+      },
+      addressOnChange() {
+        console.log(this.addressName)
+      },
+      industryOnChange() {
+        console.log(11)
       },
     },
     created() {
       /* eslint-disable */
-      this.getWxUserInfo().then((res) => {
-        alert(JSON.stringify(res))
-      })
       this.getList().then((res) => {
         this.$vux.loading.hide()
         if (res) {
-          this.list = res
+          this.pageData = res
           this.originList = res
         } else {
-          this.list = []
+          this.pageData = []
           this.originList = []
         }
       })
@@ -148,10 +193,10 @@
         this.getListWithParams(`city=${val}`).then((res) => {
           this.$vux.loading.hide()
           if (res) {
-            this.list = res
+            this.pageData = res
             this.originList = res
           } else {
-            this.list = []
+            this.pageData = []
             this.originList = []
           }
         })
@@ -294,6 +339,10 @@
 
   .topbar .filter-box .flexbox > div > a.active {
     color: #fc6621;
+  }
+
+  .vux-cell-box {
+    display: inline-block;
   }
 
 </style>

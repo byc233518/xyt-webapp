@@ -5448,3 +5448,19 @@ button.swiper-pagination-bullet {
   height: 8px;
   width: 15px;
 }
+
+.tc {
+  text-align: center;
+}
+
+.p-l-100 {
+  padding-left: 100px;
+}
+
+.p-l-50 {
+  padding-left: 50px;
+}
+
+.p-l-20 {
+  padding-left: 20px;
+}
