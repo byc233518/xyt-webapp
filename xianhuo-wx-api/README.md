@@ -114,18 +114,18 @@ function fn (a, b) {}   可以简写为  var fn = (a, b) => {}
 koa2 中的 async/await 写法
 之前
 ```javascript
-app.use(function *(next) {
+app.use(async (ctx, next) => {
   var user = this.session.user
 
   if (user && user._id) {
-    this.session.user = yield User.findOne({_id: user._id}).exec()
+    this.session.user = await User.findOne({_id: user._id}).exec()
     this.state.user = this.session.user
   }
   else {
     this.state.user = null
   }
 
-  yield next
+  await next
 })
 ```
 之后

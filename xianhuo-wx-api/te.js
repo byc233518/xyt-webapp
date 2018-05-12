@@ -28,14 +28,14 @@ var tpl = heredoc(function (){/*
     </html>
 */});
 
-appKoa.use(function *(next) {
+appKoa.use(async (ctx, next) => {
     if (this.url.indexOf('/visit') > -1) {
         this.body = ejs.render(tpl, {});
 
         return next;
     }
 
-    yield next;
+    await next;
 });
 
 //appKoa.use(wechat(config.wechat, reply.reply));

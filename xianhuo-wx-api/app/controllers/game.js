@@ -9,21 +9,21 @@ var Movie = require('../api/movie')
 var options = require('../../options.json')
 var request = require('request')
 
-exports.guess = function *(next) {
+exports.guess = async (ctx, next) => {
   var wechatApi = wx.getWechat()
-  var data = yield wechatApi.fetchAccessToken()
+  var data = await wechatApi.fetchAccessToken()
   var access_token = data.access_token
-  var ticketData = yield wechatApi.fetchTicket(access_token)
+  var ticketData = await wechatApi.fetchTicket(access_token)
   var ticket = ticketData.ticket
   var url = this.href.replace(':8000', '')
   var params = util.sign(ticket, url)
 
-  yield this.render('wechat/game', params)
+  ctx.render('wechat/game', params)
 }
 
 
-exports.jump = function *(next) {
-  var movieId = this.params.id
+exports.jump = async (ctx, next) => {
+  var movieId = ctx.params.id
   var redirect = encodeURIComponent(options.baseUrl + '/wechat/movie/' + movieId)
   // var redirect = options.baseUrl + '/wechat/movie/' + movieId
   var url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + options.appID + '&redirect_uri=' + redirect + '&response_type=code&scope=snsapi_base&state=' + movieId + '#wechat_redirect'
@@ -32,16 +32,16 @@ exports.jump = function *(next) {
 }
 
 
-exports.find = function *(next) {
-  var code = this.query.code
+exports.find = async (ctx, next) => {
+  var code = ctx.query.code
   var openUrl = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=' + options.appID + '&secret=' + options.appSecret + '&code=' + code + '&grant_type=authorization_code'
 
-  var response = yield request({
+  var response = await request({
     url: openUrl
   })
   var body = JSON.parse(response.body)
   var openid = body.openid
-  var user = yield User.findOne({openid: openid}).exec()
+  var user = await User.findOne({openid: openid}).exec()
 
   if (!user) {
     user = new User({
@@ -50,7 +50,7 @@ exports.find = function *(next) {
       name: Math.random().toString(36).substr(2)
     })
 
-    user = yield user.save()
+    user = await user.save()
   }
 
   this.session.user = user
@@ -58,14 +58,14 @@ exports.find = function *(next) {
 
   var id = this.params.id
   var wechatApi = wx.getWechat()
-  var data = yield wechatApi.fetchAccessToken()
+  var data = await wechatApi.fetchAccessToken()
   var access_token = data.access_token
-  var ticketData = yield wechatApi.fetchTicket(access_token)
+  var ticketData = await wechatApi.fetchTicket(access_token)
   var ticket = ticketData.ticket
   var url = this.href.replace(':8000', '')
   var params = util.sign(ticket, url)
-  var movie = yield Movie.searchById(id)
-  var comments = yield Comment
+  var movie = await Movie.searchById(id)
+  var comments = await Comment
     .find({movie: id})
     .populate('from', 'name')
     .populate('reply.from reply.to', 'name')
@@ -74,5 +74,5 @@ exports.find = function *(next) {
   params.movie = movie
   params.comments = comments
 
-  yield this.render('wechat/movie', params)
+  ctx.render('wechat/movie', params)
 }

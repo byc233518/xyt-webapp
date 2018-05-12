@@ -16,54 +16,54 @@ var help = '亲爱的，欢迎关注科幻电影世界\n' +
    '回复 语音，查询电影信息\n' +
    '也可以点击 <a href="' + options.baseUrl + '/wechat/movie">语音查电影</a>'
 
-exports.reply = function* (next) {
+exports.reply = async (ctx, next) => {
   var message = this.weixin
 
   console.log(message)
 
   if (message.MsgType === 'event') {
     if (message.Event === 'subscribe') {
-      this.body = help
+			ctx.body = help
     }
     else if (message.Event === 'unsubscribe') {
       console.log('无情取关')
-      this.body = ''
+			ctx.body = ''
     }
     else if (message.Event === 'LOCATION') {
-      this.body = '您上报的位置是： ' + message.Latitude + '/' + message.Longitude + '-' + message.Precision
+			ctx.body = '您上报的位置是： ' + message.Latitude + '/' + message.Longitude + '-' + message.Precision
     }
     else if (message.Event === 'SCAN') {
       console.log('关注后扫二维码' + message.EventKey + ' ' + message.Ticket)
 
-      this.body = '看到你扫了一下哦'
+			ctx.body = '看到你扫了一下哦'
     }
     else if (message.Event === 'VIEW') {
-      this.body = '您点击了菜单中的链接 ： ' + message.EventKey
+			ctx.body = '您点击了菜单中的链接 ： ' + message.EventKey
     }
     else if (message.Event === 'scancode_push') {
       console.log(message.ScanCodeInfo.ScanType)
       console.log(message.ScanCodeInfo.ScanResult)
-      this.body = '您点击了菜单中 ： ' + message.EventKey
+			ctx.body = '您点击了菜单中 ： ' + message.EventKey
     }
     else if (message.Event === 'scancode_waitmsg') {
       console.log(message.ScanCodeInfo.ScanType)
       console.log(message.ScanCodeInfo.ScanResult)
-      this.body = '您点击了菜单中 ： ' + message.EventKey
+			ctx.body = '您点击了菜单中 ： ' + message.EventKey
     }
     else if (message.Event === 'pic_sysphoto') {
       console.log(message.SendPicsInfo.PicList)
       console.log(message.SendPicsInfo.Count)
-      this.body = '您点击了菜单中 ： ' + message.EventKey
+			ctx.body = '您点击了菜单中 ： ' + message.EventKey
     }
     else if (message.Event === 'pic_photo_or_album') {
       console.log(message.SendPicsInfo.PicList)
       console.log(message.SendPicsInfo.Count)
-      this.body = '您点击了菜单中 ： ' + message.EventKey
+			ctx.body = '您点击了菜单中 ： ' + message.EventKey
     }
     else if (message.Event === 'pic_weixin') {
       console.log(message.SendPicsInfo.PicList)
       console.log(message.SendPicsInfo.Count)
-      this.body = '您点击了菜单中 ： ' + message.EventKey
+			ctx.body = '您点击了菜单中 ： ' + message.EventKey
     }
     else if (message.Event === 'location_select') {
       console.log(message.SendLocationInfo.Location_X)
@@ -71,13 +71,13 @@ exports.reply = function* (next) {
       console.log(message.SendLocationInfo.Scale)
       console.log(message.SendLocationInfo.Label)
       console.log(message.SendLocationInfo.Poiname)
-      this.body = '您点击了菜单中 ： ' + message.EventKey
+			ctx.body = '您点击了菜单中 ： ' + message.EventKey
     }
     else if (message.Event === 'CLICK') {
       var news = []
 
       if (message.EventKey === 'movie_hot') {
-        let movies = yield Movie.findHotMovies(-1, 10)
+        let movies = await Movie.findHotMovies(-1, 10)
 
         movies.forEach(function(movie) {
           news.push({
@@ -89,7 +89,7 @@ exports.reply = function* (next) {
         })
       }
       else if (message.EventKey === 'movie_cold') {
-        let movies = yield Movie.findHotMovies(1, 10)
+        let movies = await Movie.findHotMovies(1, 10)
 
         movies.forEach(function(movie) {
           news.push({
@@ -101,7 +101,7 @@ exports.reply = function* (next) {
         })
       }
       else if (message.EventKey === 'movie_crime') {
-        let cat = yield Movie.findMoviesByCate('犯罪')
+        let cat = await Movie.findMoviesByCate('犯罪')
 
         cat.movies.forEach(function(movie) {
           news.push({
@@ -113,7 +113,7 @@ exports.reply = function* (next) {
         })
       }
       else if (message.EventKey === 'movie_cartoon') {
-        let cat = yield Movie.findMoviesByCate('动画')
+        let cat = await Movie.findMoviesByCate('动画')
 
         cat.movies.forEach(function(movie) {
           news.push({
@@ -128,15 +128,15 @@ exports.reply = function* (next) {
         news = help
       }
 
-      this.body = news
+			ctx.body = news
     }
   }
   else if (message.MsgType === 'voice') {
     var voiceText = message.Recognition
-    var movies = yield Movie.searchByName(voiceText)
+    var movies = await Movie.searchByName(voiceText)
 
     if (!movies || movies.length === 0) {
-      movies = yield Movie.searchByDouban(voiceText)
+      movies = await Movie.searchByDouban(voiceText)
     }
 
     if (movies && movies.length > 0) {
@@ -157,7 +157,7 @@ exports.reply = function* (next) {
       reply = '没有查询到与 ' + voiceText + ' 匹配的电影，要不要换一个名字试试'
     }
 
-    this.body = reply
+		ctx.body = reply
   }
   else if (message.MsgType === 'text') {
     var content = message.Content
@@ -194,7 +194,7 @@ exports.reply = function* (next) {
       }]
     }
     else if (content === '5') {
-      var data = yield wechatApi.uploadMaterial('image', path.join(__dirname, '../2.jpg'))
+      var data = await wechatApi.uploadMaterial('image', path.join(__dirname, '../2.jpg'))
 
       reply = {
         type: 'image',
@@ -203,7 +203,7 @@ exports.reply = function* (next) {
       console.log(reply)
     }
     else if (content === '6') {
-      var data = yield wechatApi.uploadMaterial('video', path.join(__dirname, '../6.mp4'))
+      var data = await wechatApi.uploadMaterial('video', path.join(__dirname, '../6.mp4'))
       reply = {
         type: 'video',
         title: '回复视频内容',
@@ -212,7 +212,7 @@ exports.reply = function* (next) {
       }
     }
     else if (content === '7') {
-      var data = yield wechatApi.uploadMaterial('image', path.join(__dirname, '../2.jpg'))
+      var data = await wechatApi.uploadMaterial('image', path.join(__dirname, '../2.jpg'))
 
       reply = {
         type: 'music',
@@ -223,7 +223,7 @@ exports.reply = function* (next) {
       }
     }
     else if (content === '8') {
-      var data = yield wechatApi.uploadMaterial('image', path.join(__dirname, '../2.jpg'), {type: 'image'})
+      var data = await wechatApi.uploadMaterial('image', path.join(__dirname, '../2.jpg'), {type: 'image'})
 
       reply = {
         type: 'image',
@@ -231,7 +231,7 @@ exports.reply = function* (next) {
       }
     }
     else if (content === '9') {
-      var data = yield wechatApi.uploadMaterial('video', path.join(__dirname, '../6.mp4'), {type: 'video', description: '{"title": "Really a nice place", "introduction": "Never think it so easy"}'})
+      var data = await wechatApi.uploadMaterial('video', path.join(__dirname, '../6.mp4'), {type: 'video', description: '{"title": "Really a nice place", "introduction": "Never think it so easy"}'})
 
       console.log(data)
 
@@ -243,7 +243,7 @@ exports.reply = function* (next) {
       }
     }
     else if (content === '10') {
-      var picData = yield wechatApi.uploadMaterial('image', path.join(__dirname, '../2.jpg'), {})
+      var picData = await wechatApi.uploadMaterial('image', path.join(__dirname, '../2.jpg'), {})
 
       var media = {
         articles: [{
@@ -265,8 +265,8 @@ exports.reply = function* (next) {
         }]
       }
 
-      data = yield wechatApi.uploadMaterial('news', media, {})
-      data = yield wechatApi.fetchMaterial(data.media_id, 'news', {})
+      data = await wechatApi.uploadMaterial('news', media, {})
+      data = await wechatApi.fetchMaterial(data.media_id, 'news', {})
 
       console.log(data)
 
@@ -285,11 +285,11 @@ exports.reply = function* (next) {
       reply = news
     }
     else if (content === '11') {
-      var counts = yield wechatApi.countMaterial()
+      var counts = await wechatApi.countMaterial()
 
       console.log(JSON.stringify(counts))
 
-      var results = yield [
+      var results = await [
         wechatApi.batchMaterial({
           type: 'image',
           offset: 0,
@@ -317,58 +317,58 @@ exports.reply = function* (next) {
       reply = JSON.stringify(results)
     }
     else if (content === '12') {
-      // var group = yield wechatApi.createGroup('wechat7')
+      // var group = await wechatApi.createGroup('wechat7')
 
       // console.log('新分组 wechat7')
       // console.log(group)
 
-      // var groups = yield wechatApi.fetchGroups()
+      // var groups = await wechatApi.fetchGroups()
 
       // console.log('加了 wechat 后的分组列表')
       // console.log(groups)
 
-      // var group2 = yield wechatApi.checkGroup(message.FromUserName)
+      // var group2 = await wechatApi.checkGroup(message.FromUserName)
 
       // console.log('查看自己的分组')
 
       // console.log(group2)
 
-      // var result = yield wechatApi.moveGroup(message.FromUserName, 118)
+      // var result = await wechatApi.moveGroup(message.FromUserName, 118)
       // console.log('移动到  115')
       // console.log(result)
 
-      // var groups2 = yield wechatApi.fetchGroups()
+      // var groups2 = await wechatApi.fetchGroups()
 
       // console.log('移动后的分组列表')
       // console.log(groups2)
 
-      var result2 = yield wechatApi.moveGroup([message.FromUserName], 119)
+      var result2 = await wechatApi.moveGroup([message.FromUserName], 119)
       console.log('批量移动到  119')
       console.log(result2)
 
-      var groups3 = yield wechatApi.fetchGroups()
+      var groups3 = await wechatApi.fetchGroups()
 
       console.log('批量移动后的分组列表')
       console.log(groups3)
 
-      // var result3 = yield wechatApi.updateGroup(117, 'wechat117')
+      // var result3 = await wechatApi.updateGroup(117, 'wechat117')
 
       // console.log('117 wechat2 改名 wechat117')
       // console.log(result3)
 
-      // var groups4 = yield wechatApi.fetchGroups()
+      // var groups4 = await wechatApi.fetchGroups()
 
       // console.log('改名后的分组列表')
       // console.log(groups4)
 
-      // var result4 = yield wechatApi.deleteGroup(102)
+      // var result4 = await wechatApi.deleteGroup(102)
 
       // console.log('删除 114 tututu 分组')
 
       // console.log(result4)
 
 
-      // var groups5 = yield wechatApi.fetchGroups()
+      // var groups5 = await wechatApi.fetchGroups()
 
       // console.log('删除 114 后分组列表')
       // console.log(groups5)
@@ -377,7 +377,7 @@ exports.reply = function* (next) {
       reply = JSON.stringify(groups3)
     }
     else if (content === '13') {
-      var user = yield wechatApi.fetchUsers(message.FromUserName, 'en')
+      var user = await wechatApi.fetchUsers(message.FromUserName, 'en')
 
       console.log(user)
 
@@ -388,14 +388,14 @@ exports.reply = function* (next) {
         }
       ]
 
-      var users = yield wechatApi.fetchUsers(openIds)
+      var users = await wechatApi.fetchUsers(openIds)
 
       console.log(users)
 
       reply = JSON.stringify(user)
     }
     else if (content === '14') {
-      var userlist = yield wechatApi.listUsers()
+      var userlist = await wechatApi.listUsers()
 
       console.log(userlist)
 
@@ -409,7 +409,7 @@ exports.reply = function* (next) {
         'content': 'Hello Wechat'
       }
 
-      var msgData = yield wechatApi.sendByGroup('text', text, 119)
+      var msgData = await wechatApi.sendByGroup('text', text, 119)
 
       console.log(msgData)
       reply = 'Yeah!'
@@ -422,13 +422,13 @@ exports.reply = function* (next) {
       //   'content': 'Hello Wechat'
       // }
 
-      var msgData = yield wechatApi.previewMass('mpnews', mpnews, 'okH-duBePdGVlZ3PyqJsVkBeJspw')
+      var msgData = await wechatApi.previewMass('mpnews', mpnews, 'okH-duBePdGVlZ3PyqJsVkBeJspw')
 
       console.log(msgData)
       reply = 'Yeah!'
     }
     else if (content === '17') {
-      var msgData = yield wechatApi.checkMass('400958630')
+      var msgData = await wechatApi.checkMass('400958630')
 
       console.log(msgData)
       reply = 'Yeah hah!'
@@ -462,9 +462,9 @@ exports.reply = function* (next) {
       //   }
       // }
 
-      //var qr1 = yield wechatApi.createQrcode(tempQr)
-      //var qr2 = yield wechatApi.createQrcode(permQr)
-      //var qr3 = yield wechatApi.createQrcode(permStrQr)
+      //var qr1 = await wechatApi.createQrcode(tempQr)
+      //var qr2 = await wechatApi.createQrcode(permQr)
+      //var qr3 = await wechatApi.createQrcode(permStrQr)
 
 
       reply = 'Yeah hah!'
@@ -472,7 +472,7 @@ exports.reply = function* (next) {
     else if (content === '19') {
       var longUrl = 'http://www.imooc.com/'
 
-      var shortData = yield wechatApi.createShorturl(null, longUrl)
+      var shortData = await wechatApi.createShorturl(null, longUrl)
 
       reply = shortData.short_url
     }
@@ -484,16 +484,16 @@ exports.reply = function* (next) {
         uid: message.FromUserName
       }
 
-      var _semanticData = yield wechatApi.semantic(semanticData)
+      var _semanticData = await wechatApi.semantic(semanticData)
 
 
       reply = JSON.stringify(_semanticData)
     }
     else {
-      var movies = yield Movie.searchByName(content)
+      var movies = await Movie.searchByName(content)
 
       if (!movies || movies.length === 0) {
-        movies = yield Movie.searchByDouban(content)
+        movies = await Movie.searchByDouban(content)
       }
 
       if (movies && movies.length > 0) {
@@ -516,8 +516,8 @@ exports.reply = function* (next) {
     }
 
 
-    this.body = reply
+		ctx.body = reply
   }
 
-  yield next
+  await next
 }

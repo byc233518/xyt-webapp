@@ -7,11 +7,12 @@ var Comment = require('../app/controllers/comment')
 var Game = require('../app/controllers/game')
 var Wechat = require('../app/controllers/wechat')
 var Category = require('../app/controllers/category')
-var koaBody = require('koa-body')
+// var koaBody = require('koa-body')
 
 module.exports = router => {
+  console.log(1111)
   // Index
-  router.get('/nodeport', Index.index, Index.allowedMethods())
+  router.get('/nodeport', Index.index)
 
   // User
   router.post('/nodeport/user/signup', User.signup)
@@ -32,7 +33,7 @@ module.exports = router => {
   router.get('/nodeport/movie/:id', Movie.detail)
   router.get('/nodeport/admin/movie/new', User.signinRequired, User.adminRequired, Movie.new)
   router.get('/nodeport/admin/movie/update/:id', User.signinRequired, User.adminRequired, Movie.update)
-  router.post('/nodeport/admin/movie', User.signinRequired, User.adminRequired, koaBody({multipart: true}), Movie.savePoster, Movie.save)
+  // router.post('/nodeport/admin/movie', User.signinRequired, User.adminRequired, koaBody({multipart: true}), Movie.savePoster, Movie.save)
   router.get('/nodeport/admin/movie/list', User.signinRequired, User.adminRequired, Movie.list)
   router.delete('/nodeport/admin/movie/list', User.signinRequired, User.adminRequired, Movie.del)
 

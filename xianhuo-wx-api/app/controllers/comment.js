@@ -4,12 +4,12 @@ var mongoose = require('mongoose')
 var Comment = mongoose.model('Comment')
 
 // comment
-exports.save = function *(next) {
-  var _comment = this.request.body.comment
+exports.save =  async (ctx, next) =>  {
+  var _comment = ctx.request.body.comment
   var movieId = _comment.movie
 
   if (_comment.cid) {
-    let comment = yield Comment.findOne({
+    let comment = await Comment.findOne({
       _id: _comment.cid
     }).exec()
 
@@ -20,7 +20,7 @@ exports.save = function *(next) {
     }
 
     comment.reply.push(reply)
-    yield comment.save()
+    await comment.save()
 
     this.body = {success: 1}
   }
@@ -31,7 +31,7 @@ exports.save = function *(next) {
       content: _comment.content
     })
 
-    yield comment.save()
+    await comment.save()
     this.body = {success: 1}
   }
 }
