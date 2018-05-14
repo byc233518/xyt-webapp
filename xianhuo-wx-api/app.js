@@ -25,11 +25,11 @@ var wx = require('./wx')
 var wechatApi = wx.getWechat()
 
 wechatApi.deleteMenu().then(function() {
-  return wechatApi.createMenu(menu)
+	return wechatApi.createMenu(menu)
 })
-.then(function(msg) {
-  console.log('msg', msg)
-})
+	.then(function(msg) {
+		console.log('msg', msg)
+	})
 
 var app = new Koa()
 var Router = require('koa-router')

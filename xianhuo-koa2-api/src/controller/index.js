@@ -31,13 +31,14 @@ exports.postHandle = (ctx, next) => {
 		case 'event':
 			switch (message.Event) {
 				case 'subscribe':
-					result = '欢迎关注'
+					result = wx.message.text(message, '欢迎关注')
 					break;
 				case 'unsubscribe':
 					result = 'unsubscribe'
 					break;
 				case 'LOCATION':
-					result = 'LOCATION'
+					console.log('location', message)
+					result = wx.message.text(message, '1111111')
 					break;
 				case 'SCAN':
 					result = 'SCAN'
@@ -64,9 +65,10 @@ exports.postHandle = (ctx, next) => {
 					result = 'location_select'
 					break;
 				case 'CLICK':
-					news = []
+					let news = []
+					console.log(message.EventKey)
 					switch (message.EventKey) {
-						case 'movie_hot':
+						case 'intelligent_search':
 							// let movies = await Movie.findHotMovies(-1, 10)
 							// movies.forEach(function (movie) {
 							// 	news.push({
@@ -76,24 +78,44 @@ exports.postHandle = (ctx, next) => {
 							// 		url: options.baseUrl + '/wechat/jump/' + movie._id
 							// 	})
 							// })
-							news.push()
+							news.push({
+								title: '智能搜索到的1条',
+								description: '只是个描述而已',
+								picUrl: 'http://res.cloudinary.com/moveha/image/upload/v1441184110/assets/images/Mask-min.png',
+								url: 'https://www.xetong.cn/xianhuo-webapp/'
+							});
+							break;
+
+						case 'job_recommendation':
+							news.push({
+								title: '职位推荐的1条',
+								description: '只是个描述而已',
+								picUrl: 'http://res.cloudinary.com/moveha/image/upload/v1441184110/assets/images/Mask-min.png',
+								url: 'https://www.xetong.cn/xianhuo-webapp/'
+							});
+							break;
+						case 'index':
+							news.push({
+								title: '回到首页',
+								description: '只是个描述而已',
+								picUrl: 'http://res.cloudinary.com/moveha/image/upload/v1441184110/assets/images/Mask-min.png',
+								url: 'https://www.xetong.cn/xianhuo-webapp/'
+							});
+							break;
 					}
-					result = news
+					result = wx.message.articles(message, news)
 					break;
 			}
 			break;
 		case 'voice':
-			console.log(1111111,message.Recognition)
 			const voiceText = message.Recognition
 			result = wx.message.recognition(message, voiceText)
 			break;
 		case 'text':
-			var content = message.Content
-			var reply = '额，你说的' + message.Content + ' 太复杂了'
-			console.log('content', content === 1)
-
+			const content = message.Content
+			let reply = '额，你说的' + message.Content + ' 太复杂了'
 			if (content === '1') {
-				reply = '天下第一吃大米11'
+				reply = '天下第一吃大米'
 			}
 			else if (content === '2') {
 				reply = '天下第二吃豆腐'

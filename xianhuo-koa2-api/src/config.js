@@ -5,6 +5,7 @@ module.exports = {
     wx: {
         token: '123',
         appid: 'wx185463cc92b5ca47',
+        appsecret: '81c2262eccfe70810587e6f82face06d',
         encodingAESKey: '81c2262eccfe70810587e6f82face06d'
     }
 }
