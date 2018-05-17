@@ -1,4 +1,8 @@
-// index controller
+const Monk = require('monk')
+const db = new Monk('39.108.77.185:27018/xianhuo');
+const jobList = db.get('list');
+const company = db.get('company');
+
 const wx = require('../util/wx')
 const xml = require('../util/xml')
 
@@ -11,7 +15,8 @@ exports.getHandle = async (ctx, next) => {
 	}
 }
 
-exports.postHandle = (ctx, next) => {
+exports.postHandle = async (ctx, next) => {
+
 	let message,
 		MsgType,
 		result
@@ -25,7 +30,7 @@ exports.postHandle = (ctx, next) => {
 
 	MsgType = message.MsgType
 
-	console.log(MsgType)
+	console.log('message', message)
 
 	switch (MsgType) {
 		case 'event':
@@ -33,57 +38,40 @@ exports.postHandle = (ctx, next) => {
 				case 'subscribe':
 					result = wx.message.text(message, '欢迎关注')
 					break;
-				case 'unsubscribe':
-					result = 'unsubscribe'
-					break;
-				case 'LOCATION':
-					console.log('location', message)
-					result = wx.message.text(message, '1111111')
-					break;
-				case 'SCAN':
-					result = 'SCAN'
-					break;
-				case 'VIEW':
-					result = 'VIEW'
-					break;
-				case 'scancode_push':
-					result = 'scancode_push'
-					break;
-				case 'scancode_waitmsg':
-					result = 'scancode_waitmsg'
-					break;
-				case 'pic_sysphoto':
-					result = 'pic_sysphoto'
-					break;
-				case 'pic_photo_or_album':
-					result = 'pic_photo_or_album'
-					break;
-				case 'pic_weixin':
-					result = 'pic_weixin'
-					break;
-				case 'location_select':
-					result = 'location_select'
-					break;
 				case 'CLICK':
 					let news = []
 					console.log(message.EventKey)
 					switch (message.EventKey) {
 						case 'intelligent_search':
-							// let movies = await Movie.findHotMovies(-1, 10)
-							// movies.forEach(function (movie) {
+							console.log('~~~~~~~~~~~')
+							await jobList.find().then((res) => {
+								res.forEach((item) => {
+									console.log('!!!!!!!!!!', item)
+									news.push({
+										title: '智能搜索到的1条',
+										description: '只是个描述而已',
+										picUrl: 'http://res.cloudinary.com/moveha/image/upload/v1441184110/assets/images/Mask-min.png',
+										url: 'https://www.xetong.cn/xianhuo-webapp/'
+									})
+								})
+							})
+							// console.log(jobs)
+							// jobs.forEach((item) => {
 							// 	news.push({
-							// 		title: movie.title,
-							// 		description: movie.title,
-							// 		picUrl: movie.poster,
-							// 		url: options.baseUrl + '/wechat/jump/' + movie._id
+							// 		title: '智能搜索到的1条',
+							// 		description: '只是个描述而已',
+							// 		picUrl: 'http://res.cloudinary.com/moveha/image/upload/v1441184110/assets/images/Mask-min.png',
+							// 		url: 'https://www.xetong.cn/xianhuo-webapp/'
 							// 	})
 							// })
-							news.push({
-								title: '智能搜索到的1条',
-								description: '只是个描述而已',
-								picUrl: 'http://res.cloudinary.com/moveha/image/upload/v1441184110/assets/images/Mask-min.png',
-								url: 'https://www.xetong.cn/xianhuo-webapp/'
-							});
+
+
+							// news.push({
+							// 	title: '智能搜索到的1条',
+							// 	description: '只是个描述而已',
+							// 	picUrl: 'http://res.cloudinary.com/moveha/image/upload/v1441184110/assets/images/Mask-min.png',
+							// 	url: 'https://www.xetong.cn/xianhuo-webapp/'
+							// });
 							break;
 
 						case 'job_recommendation':

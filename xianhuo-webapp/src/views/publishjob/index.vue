@@ -5,7 +5,8 @@
     </div>
     <div class="p-20">
       <group title="">
-        <x-input required title="电 话" v-model="mobilephone" :max="11" is-type="china-mobile"></x-input>
+        <x-input required title="电 话"
+                 v-model="mobilephone" :max="11" is-type="china-mobile"></x-input>
         <x-input required title="职位名称" v-model="username"></x-input>
         <x-input required title="学历要求" v-model="username"></x-input>
         <x-input required title="工作时间" v-model="username"></x-input>
@@ -37,17 +38,17 @@
     },
     methods: {
       submit() {
-        const _this = this
+        const that = this
         this.$vux.confirm.show({
           content: '确认信息真实无误并发布?',
-          onCancel () {
+          onCancel() {
             console.log(this) // 非当前 vm
-            console.log(_this) // 当前 vm
+            console.log(that) // 当前 vm
           },
-          onConfirm () {}
+          onConfirm() {},
         })
       },
-    }
+    },
   }
 </script>
 

@@ -59,23 +59,6 @@
                 <i class="text-icon icon-narrow-down"></i>
               </a>
             </div>
-            <!--<div class="flex-1">-->
-              <!--<a href="javascript:;" data-selector="more"><span class="ellipsis-1">更多</span><i-->
-                <!--class="text-icon icon-narrow-down"></i></a>-->
-              <!--<input type="hidden" name="salarylow" value="0">-->
-              <!--<input type="hidden" name="salaryhigh" value="999">-->
-              <!--<input type="hidden" name="compScale" value="000">-->
-              <!--<input type="hidden" name="compKind" value="000">-->
-              <!--<input type="hidden" name="pubtime" value="000">-->
-              <!--<input type="hidden" name="jobkind" value="">-->
-
-              <!--<input type="hidden" name="d_headId" value="6c7d7173834bed34e47390ad98f823a7">-->
-              <!--<input type="hidden" name="d_ckId" value="6b9b9361b891fd243c9b3681315113d2">-->
-              <!--<input type="hidden" name="d_sfrom" value="search_prime">-->
-              <!--<input type="hidden" name="d_curPage" value="0">-->
-              <!--<input type="hidden" name="d_pageSize" value="60">-->
-              <!--<input type="hidden" name="siTag" value="om9hg_PdxKRszYCQ1YpArw~zW1lJiASHEwDbI8bVQzcWg">-->
-            <!--</div>-->
           </div>
         </div>
       </form>
@@ -85,7 +68,7 @@
       <div class="job-card" v-for="(item, key) in pageData" @click="linkTo(`detail/${item._id}`)">
         <dl class="clearfix">
           <dt class="job-card-logo">
-            <img src="https://image0.lietou-static.com/middle_/59255c707032a8e95b0f082106a.jpg" alt=""
+            <img :src=item.thumbnail alt=""
                  class="job-card-logo">
           </dt>
           <dd class="right-info">
@@ -112,7 +95,6 @@
 </template>
 
 <script>
-  import { Tabbar, TabbarItem, Cell, Search, XAddress, ChinaAddressV4Data, Group, PopupPicker } from 'vux'
   import ApiMixins from '../../assets/js/apiMixin'
   import FnMixins from '../../assets/js/fnMixin'
   import CityPicker from '../../components/common/cityPicker.vue'
@@ -120,15 +102,7 @@
   export default {
     name: 'App',
     components: {
-      Tabbar,
-      TabbarItem,
-      Cell,
-      Search,
       CityPicker,
-      XAddress,
-      ChinaAddressV4Data,
-      Group,
-      PopupPicker,
     },
     data: () => {
       return {

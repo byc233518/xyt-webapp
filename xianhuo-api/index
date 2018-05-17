@@ -13,6 +13,11 @@ const company = db.get('company'); // 公司表
 const user = db.get('user'); // 用户表
 const sha1 = require('sha1')
 
+
+/*eslint-disable*/
+const superagent = require('superagent');
+const cheerio = require('cheerio');
+
 app.use(bodyParser()) // 解析 request body
 app.use(cors()) // 跨域插件
 // 打印request URL:
@@ -25,14 +30,6 @@ router.get('/', async (ctx) => {
 	ctx.response.type = 'text/html';
 	ctx.body = 'hi'
 })
-
-var config={
-	wechat:{
-		appID: 'wx185463cc92b5ca47',
-		appsecret: '81c2262eccfe70810587e6f82face06d',
-		token: '123'
-	}
-}
 
 router.get('/wx', async (ctx) => {
 	console.log(ctx.query)
@@ -79,12 +76,11 @@ router.get('/getUserInfo', async (ctx) => { // 按 条件 获取工作
 	ctx.body = res;
 })
 
-router. delete('/list/:id', async (ctx) => { // 按 ID 删除工作
+router.delete('/list/:id', async (ctx) => { // 按 ID 删除工作
 	let item = await jobList.remove(ctx.params.id);
 	ctx.response.type = 'application/json';
 	ctx.body = item;
 })
-
 
 
 router.post('/list', async (ctx) => { // 新增工作
@@ -141,7 +137,6 @@ router.get('/company/:name', async (ctx) => { // 按照名称获取公司信息
 })
 
 
-
 router.post('/company', async (ctx) => { // 新增公司
 	const reqParams = ctx.request.body
 	let obj = {
@@ -170,6 +165,44 @@ router.post('/company', async (ctx) => { // 新增公司
 // 	let saveRes = await jobList.insert(obj)
 // 	ctx.body = saveRes;
 // })
+
+
+router.get('/crawl', (ctx) => {
+	const reptileUrl = "https://m.liepin.com/sz/chanpingongyi/";
+	superagent.get(reptileUrl).end(function (err, res) {
+		// 抛错拦截
+		if (err) {
+			return
+			throw Error(err);
+		}
+		/**
+		 * res.text 包含未解析前的响应内容
+		 * 我们通过cheerio的load方法解析整个文档，就是html页面所有内容，可以通过console.log($.html());在控制台查看
+		 */
+		let $ = cheerio.load(res.text);
+		$('.job-card-wrap .job-card').each((i, elem) => {
+			let obj = {
+				num: 5,
+				lat: null,
+				lng: null,
+				tel: $(elem).find('.right-info .job-name span').text(),
+				city: $(elem).find('.right-info a[href="https://m.liepin.com/sz/chanpingongyi/"]').text(),
+				desc: '',
+				date: $(elem).find('.right-info time').text(),
+				title: $(elem).find('.right-info .job-name span').text(),
+				thumbnail: $(elem).find('.job-card-logo img').attr('src'),
+				salary: $(elem).find('.right-info span.text-warning').text(),
+				address: $(elem).find('.right-info .job-name span').text(),
+				province: $(elem).find('.right-info .job-name span').text(),
+				requirement: $(elem).find('.right-info li:last-child').text(),
+				company_name: $(elem).find('.right-info .company-name').text(),
+				company_id: $(elem).find('.right-info .job-name span').text(),
+			}
+			let saveRes = jobList.insert(obj)
+			ctx.body = saveRes;
+		});
+	});
+})
 
 
 app.use(router.routes());

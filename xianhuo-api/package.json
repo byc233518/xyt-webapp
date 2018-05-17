@@ -11,16 +11,18 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "cheerio": "^1.0.0-rc.2",
     "cors": "^2.8.4",
-    "koa": "^2.4.1",
+    "koa": "^2.5.1",
     "koa-bodyparser": "^4.2.0",
     "koa-cors": "0.0.16",
-    "koa-router": "^7.3.0",
+    "koa-router": "^7.4.0",
     "koa2-cors": "^2.0.5",
-    "monk": "^6.0.5",
-    "request": "^2.83.0",
+    "monk": "^6.0.6",
+    "request": "^2.86.0",
     "request-promise": "^4.2.2",
     "sha1": "^1.1.1",
+    "superagent": "^3.8.3",
     "urlencode": "^1.1.0",
     "vuex": "^3.0.1"
   },
