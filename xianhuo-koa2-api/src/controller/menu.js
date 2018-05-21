@@ -13,12 +13,12 @@ const menus = {
 			'type': 'click',
 			'key': 'job_recommendation'
 		}, {
-			'name': '闲活官网',
+			'name': '信活官网',
 			'type': 'click',
 			'key': 'index'
 		}]
 	}, {
-		'name': '我的闲活',
+		'name': '我的信活',
 		'sub_button': [{
 			'name': '绑定账号',
 			'type': 'click',

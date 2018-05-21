@@ -27,36 +27,31 @@
           <p class="salary">{{jobData.salary}}</p>
         </div>
         <p class="feedback-labels clearfix">
-          <label class="type-ejob-danger">企业急聘</label>
+          <label class="type-ejob-danger">急聘</label>
           <label data-selector="feedback">24小时反馈</label>
-          <span class="favorite float-right"><i class="text-icon icon-collection"></i><em class="muted">收藏</em></span>
         </p>
         <div class="job-conditon">
-          <p><a>{{jobData.city}}</a></p>|
-          <p>有经验</p>|
-          <p>学历无要求</p>
+          <p>地区: <a>{{jobData.city}}</a></p>
+          <p>经验要求: 有经验</p>
+          <p>学历要求: 无要求</p>
         </div>
         <!-- 福利标签 -->
-        <div class="welfare clearfix">
-          <img class="quotes"
-               src="//concat.lietou-static.com/fe-mobile-h5/v5/static/images/pages/job/quotes.e3e4ce19.png">
-          职位诱惑：节日礼物,五险一金,带薪年假,定期体检,上市公司
-        </div>
-        <a href="javascript:;" class="btn-apply-job" data-selector="apply">应聘职位</a>
+        <a href="tel: 13333333333" class="btn-apply-job" data-selector="apply">立即联系</a>
       </section>
 
       <section class="company-info">
         <div class="job-parent clearfix" data-selector="card-link">
-          <a href="https://m.liepin.com/company/5009256/" class="job-img"><img
+          <a href="#" class="job-img">
+            <img
             :src=jobData.thumbnail class="tinyLogo"></a>
           <div class="job-parent-info">
             <h2 class="ellipsis-1">
-              {{companyData.name}}
+              {{jobData.company_name}}
             </h2>
-            <p class="muted ellipsis-1">
-              <a href="https://m.liepin.com/ruanjian/" class="industry-link"
-                 data-selector="return-url">{{companyData.industry}}</a>
-              &nbsp;|&nbsp;{{companyData.scale}}</p>
+            <!--<p class="muted ellipsis-1">-->
+              <!--<a href="https://m.liepin.com/ruanjian/" class="industry-link"-->
+                 <!--data-selector="return-url">{{companyData.industry}}</a>-->
+              <!--&nbsp;&nbsp;{{companyData.scale}}</p>-->
           </div>
           <i class="text-icon icon-go-ahead"></i>
         </div>
@@ -235,7 +230,6 @@
   }
 
   .job-conditon p {
-    display: inline;
     margin: 0 5px 0 5px;
   }
 

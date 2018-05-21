@@ -17,7 +17,9 @@ const app = new Koa()
 
 
 
-const help = `感谢您关注 微信版! \n 回复 语音 或	文字 查找相关内容, \n 或者到 <a href='https://www.xetong.cn/xianhuo-webapp'>首页</a> 去看看`;
+const help = `感谢您关注 微信版!
+回复 语音 或	文字 查找相关内容,
+或者到 <a href='https://www.xetong.cn/xianhuo-webapp'>首页</a> 去看看`;
 
 
 app.use(wechat(config.wx).middleware(async (message, ctx) => {
@@ -32,7 +34,6 @@ app.use(wechat(config.wx).middleware(async (message, ctx) => {
 			if (message.EventKey === 'intelligent_search') {
 				let news = []
 				await jobList.find({}, {limit: 3, skip: 5}).then((res) => {
-					console.log(res)
 					res.forEach((item) => {
 						news.push({
 							title: item.title,
@@ -42,15 +43,39 @@ app.use(wechat(config.wx).middleware(async (message, ctx) => {
 						})
 					});
 				})
-
 				return news;
-				// return [{
-				// 	title: '智能搜索到的1条',
-				// 	description: '只是个描述而已',
-				// 	picUrl: 'http://res.cloudinary.com/moveha/image/upload/v1441184110/assets/images/Mask-min.png',
-				// 	url: 'https://www.xetong.cn/xianhuo-webapp/'
-				// }]
-			} else {
+			} else if (message.EventKey === 'job_recommendation') {
+				let news = []
+				await jobList.find({}, {limit: 3, skip: 0}).then((res) => {
+					res.forEach((item) => {
+						news.push({
+							title: item.title,
+							description: item.desc,
+							picUrl: item.thumbnail,
+							url: `http://web.ngrok.xetong.cn/#/detail/${item._id}`
+						})
+					});
+				})
+				return news;
+			} else if (message.EventKey === 'intelligent_search') {
+				let news = []
+				await jobList.find({}, {limit: 3, skip: 5}).then((res) => {
+					res.forEach((item) => {
+						news.push({
+							title: item.title,
+							description: item.desc,
+							picUrl: item.thumbnail,
+							url: `http://web.ngrok.xetong.cn/#/detail/${item._id}`
+						})
+					});
+				})
+				return news;
+			} else if (message.EventKey === 'intelligent_search') {
+				return {
+					content: help,
+					type: 'text'
+				}
+			} else if (message.EventKey === 'intelligent_search') {
 				return {
 					content: help,
 					type: 'text'

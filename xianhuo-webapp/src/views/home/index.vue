@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="tc">闲活 && 微信</div>
+    <div class="tc">信活 && 微信</div>
   </div>
 </template>
 

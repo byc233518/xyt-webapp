@@ -13,12 +13,12 @@ const menus = {
 			'type': 'click',
 			'key': 'job_recommendation'
 		}, {
-			'name': '闲活官网',
-			'type': 'click',
-			'key': 'index'
+			'name': '信活官网',
+			"type": "view",
+			"url": "http://web.ngrok.xetong.cn/xianhuo-webapp/"
 		}]
 	}, {
-		'name': '我的闲活',
+		'name': '我的信活',
 		'sub_button': [{
 			'name': '绑定账号',
 			'type': 'click',
@@ -32,8 +32,8 @@ const menus = {
 		'name': '招聘中心',
 		'sub_button': [{
 			'name': '免费发布职位',
-			"type":"view",
-			"url":"http://xetong.cn/xianhuo-webapp/#/publishjob"
+			"type": "view",
+			"url": "http://web.ngrok.xetong.cn/xianhuo-webapp/#/publishjob"
 		}]
 	}]
 }

@@ -32,7 +32,7 @@
         <div class="filter-box">
           <div class="flexbox">
             <div class="flex-1">
-              <a href="javascript:;" @click="showAdderssPicker" data-selector="city" class="active selected">
+              <a href="javascript:;" @click="showAdderssPicker" class="active selected">
                 <span class="ellipsis-1">
                   <x-address style="display:none;"
                              hide-district
@@ -45,7 +45,7 @@
                              :show.sync="showAddressPicker"
                   ></x-address>
                 </span>
-                {{addressName[1]}}
+                {{city}}
                 <i class="text-icon icon-narrow-down"></i>
               </a><input type="hidden" name="dqs" value="050030">
             </div>
@@ -74,7 +74,7 @@
           <dd class="right-info">
             <ul>
               <li class="flexbox">
-                <a class="flex-3 job-name">
+                <a class="flex-2 job-name">
                   <span class="name-text">{{item.title}}   </span>
                 </a>
                 <span class="text-warning flex-1">{{item.salary}}</span>
@@ -95,6 +95,7 @@
 </template>
 
 <script>
+  import { ChinaAddressV4Data, Value2nameFilter as value2name } from 'vux'
   import ApiMixins from '../../assets/js/apiMixin'
   import FnMixins from '../../assets/js/fnMixin'
   import CityPicker from '../../components/common/cityPicker.vue'
@@ -103,15 +104,16 @@
     name: 'App',
     components: {
       CityPicker,
+      ChinaAddressV4Data,
     },
     data: () => {
       return {
         originList: [],
         pageData: [],
         textKey: '',
+        city: '全国',
+        province: '',
         address: [],
-        addressId: [],
-        addressName: [],
         showAddressPicker: false,
         addressData: ChinaAddressV4Data,
         industry: ['全部行业'],
@@ -119,9 +121,6 @@
       }
     },
     computed: {
-      city() {
-        return this.$store.getters.getCity
-      },
     },
     methods: {
       searchOnChange(event) {
@@ -137,15 +136,17 @@
       showAdderssPicker() {
         this.showAddressPicker = true
       },
-      showAddress(ids, names) {
-        this.addressId = ids
-        this.addressName = names
+      showAddress() {
       },
       addressOnChange() {
-        console.log(this.addressName)
+        this.province = this.getName(this.address).split(' ')[0]
+        this.city = this.getName(this.address).split(' ')[1]
       },
       industryOnChange() {
-        console.log(11)
+        console.log(this.industry)
+      },
+      getName(value) {
+        return value2name(value, ChinaAddressV4Data)
       },
     },
     created() {
@@ -163,18 +164,6 @@
     },
     /* eslint-disable */
     watch: {
-      city: function (val) {
-        this.getListWithParams(`city=${val}`).then((res) => {
-          this.$vux.loading.hide()
-          if (res) {
-            this.pageData = res
-            this.originList = res
-          } else {
-            this.pageData = []
-            this.originList = []
-          }
-        })
-      },
     },
     mixins: [ApiMixins, FnMixins],
   }

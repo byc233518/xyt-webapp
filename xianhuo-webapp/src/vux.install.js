@@ -17,6 +17,8 @@ import {
   FlexboxItem,
   XTextarea,
   Group,
+  XAddress,
+  PopupPicker,
 } from 'vux';
 
 const options = {
@@ -38,6 +40,8 @@ const options = {
   FlexboxItem,
   XTextarea,
   Group,
+  XAddress,
+  PopupPicker,
 };
 /* eslint-disable */
 options.install = (Vue) => {

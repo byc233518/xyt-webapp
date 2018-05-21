@@ -17,6 +17,7 @@ const sha1 = require('sha1')
 /*eslint-disable*/
 const superagent = require('superagent');
 const cheerio = require('cheerio');
+const iconv = require('iconv-lite');
 
 app.use(bodyParser()) // 解析 request body
 app.use(cors()) // 跨域插件
@@ -168,40 +169,71 @@ router.post('/company', async (ctx) => { // 新增公司
 
 
 router.get('/crawl', (ctx) => {
-	const reptileUrl = "https://m.liepin.com/sz/chanpingongyi/";
-	superagent.get(reptileUrl).end(function (err, res) {
-		// 抛错拦截
-		if (err) {
-			return
-			throw Error(err);
-		}
-		/**
-		 * res.text 包含未解析前的响应内容
-		 * 我们通过cheerio的load方法解析整个文档，就是html页面所有内容，可以通过console.log($.html());在控制台查看
-		 */
+	// const reptileUrl = "https://m.liepin.com/sz/chanpingongyi/";
+	// superagent.get(reptileUrl).end(function (err, res) {
+	// 	// 抛错拦截
+	// 	if (err) {
+	// 		return
+	// 		throw Error(err);
+	// 	}
+	// 	/**
+	// 	 * res.text 包含未解析前的响应内容
+	// 	 * 我们通过cheerio的load方法解析整个文档，就是html页面所有内容，可以通过console.log($.html());在控制台查看
+	// 	 */
+	// 	let $ = cheerio.load(res.text);
+	// 	$('.job-card-wrap .job-card').each((i, elem) => {
+	// 		let obj = {
+	// 			num: 5,
+	// 			lat: null,
+	// 			lng: null,
+	// 			tel: $(elem).find('.right-info .job-name span').text(),
+	// 			city: $(elem).find('.right-info a[href="https://m.liepin.com/sz/chanpingongyi/"]').text(),
+	// 			desc: '',
+	// 			date: $(elem).find('.right-info time').text(),
+	// 			title: $(elem).find('.right-info .job-name span').text(),
+	// 			thumbnail: $(elem).find('.job-card-logo img').attr('src'),
+	// 			salary: $(elem).find('.right-info span.text-warning').text(),
+	// 			address: $(elem).find('.right-info .job-name span').text(),
+	// 			province: $(elem).find('.right-info .job-name span').text(),
+	// 			requirement: $(elem).find('.right-info li:last-child').text(),
+	// 			company_name: $(elem).find('.right-info .company-name').text(),
+	// 			company_id: $(elem).find('.right-info .job-name span').text(),
+	// 		}
+	// 		let saveRes = jobList.insert(obj)
+	// 		ctx.body = saveRes;
+	// 	});
+	// });
+	const reptileUrl = 'http://sz.58.com/jianzhi/1/?special_id=2&PGTID=0d203675-0000-4eed-eea4-0e251297b1f3&ClickID=1'
+	superagent.get(reptileUrl).end((err, res) => {
 		let $ = cheerio.load(res.text);
-		$('.job-card-wrap .job-card').each((i, elem) => {
-			let obj = {
-				num: 5,
-				lat: null,
-				lng: null,
-				tel: $(elem).find('.right-info .job-name span').text(),
-				city: $(elem).find('.right-info a[href="https://m.liepin.com/sz/chanpingongyi/"]').text(),
-				desc: '',
-				date: $(elem).find('.right-info time').text(),
-				title: $(elem).find('.right-info .job-name span').text(),
-				thumbnail: $(elem).find('.job-card-logo img').attr('src'),
-				salary: $(elem).find('.right-info span.text-warning').text(),
-				address: $(elem).find('.right-info .job-name span').text(),
-				province: $(elem).find('.right-info .job-name span').text(),
-				requirement: $(elem).find('.right-info li:last-child').text(),
-				company_name: $(elem).find('.right-info .company-name').text(),
-				company_id: $(elem).find('.right-info .job-name span').text(),
+		$('.mianContent .left .items .item').each((i, elem) => {
+			const url = $(elem).attr('data-href')
+			if (url) {
+				superagent.get(url).end((childErr, childRes) => {
+					let $ = cheerio.load(childRes.text);
+					let obj = {
+						num: ($('.zpinfo .loc').eq(0).find('span').text()).replace(/\t/g, ''),
+						lat: null,
+						lng: null,
+						tel: '13333333333',
+						city: '深圳市',
+						desc: $('.xq p').text(),
+						date: Date.now(),
+						title: $('.zw h1').text(),
+						thumbnail: 'https://image0.lietou-static.com/middle_/598280c57032c08e132d954c04a.jpg',
+						salary: $('.price span').text(),
+						address: $('.zpinfo .loc').eq(2).find('span').text(),
+						province: '广东省',
+						requirement: $('.xq p').text(),
+						company_name: $('.gsjs1 h2 a').text(),
+						company_id: 0,
+					}
+					let saveRes = jobList.insert(obj)
+					ctx.body = saveRes;
+				})
 			}
-			let saveRes = jobList.insert(obj)
-			ctx.body = saveRes;
-		});
-	});
+		})
+	})
 })
 
 
