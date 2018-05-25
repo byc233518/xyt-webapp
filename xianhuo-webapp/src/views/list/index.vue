@@ -2,11 +2,10 @@
   <!--eslint-disable-->
   <div>
     <section class="topbar">
-      <form action="/zhaopin/" method="get">
-
+      <div>
         <div class="search-box">
           <div id="input-wraper" class="input-top">
-            <a class="logo-icon" href="https://m.liepin.com/"></a>
+            <a class="logo-icon"></a>
             <div class="back">
               <i class="text-icon icon-back"></i>
             </div>
@@ -20,12 +19,12 @@
                 </div>
                 <input data-selector="search-type" value="0" type="hidden">
               </div>
-              <input data-selector="search-input" name="keyword" type="text" placeholder="请输入职位名称" value="">
+              <input name="textKey" type="text" placeholder="请输入职位名称" v-model="textKey">
               <i class="text-icon icon-close clear-input-btn" style="display: none;"></i></div>
             <div class="go">
-              <i data-nick="job-search" class="text-icon icon-search"></i>
+              <i class="text-icon icon-search"></i>
             </div>
-            <a class="users-btn" data-selector="users-btn" href="javascript:;"><i class="text-icon icon-user"></i></a>
+            <a class="users-btn" @click="gotoHome" href="javascript:;"><i class="text-icon icon-user"></i></a>
           </div>
         </div>
 
@@ -47,12 +46,13 @@
                 </span>
                 {{city}}
                 <i class="text-icon icon-narrow-down"></i>
-              </a><input type="hidden" name="dqs" value="050030">
+              </a>
             </div>
             <div class="flex-1">
               <a href="javascript:;" data-selector="industrys-select" class="active selected">
                 <popup-picker :data='industrys'
                               v-model='industry'
+                              placeholder="请选择行业"
                               @on-change='industryOnChange'
                 ></popup-picker>
                 <!--<span class="ellipsis-1">{{industry}}</span>-->
@@ -61,11 +61,11 @@
             </div>
           </div>
         </div>
-      </form>
+      </div>
     </section>
 
     <div class="job-card-wrap">
-      <div class="job-card" v-for="(item, key) in pageData" @click="linkTo(`detail/${item._id}`)">
+      <div v-if="pageData && pageData.length" class="job-card" v-for="(item, key) in pageData" @click="linkTo(`detail/${item._id}`)">
         <dl class="clearfix">
           <dt class="job-card-logo">
             <img :src=item.thumbnail alt=""
@@ -90,6 +90,7 @@
           </dd>
         </dl>
       </div>
+      <div v-else class="tc fz-32">{{loadingText}}</div>
     </div>
   </div>
 </template>
@@ -117,7 +118,9 @@
         showAddressPicker: false,
         addressData: ChinaAddressV4Data,
         industry: ['全部行业'],
-        industrys: [['全部行业', '服务行业', '建筑行业', '其他行业']],
+        industrys: [['全部行业', '农林牧业', '服务行业', '建筑行业', '其他行业']],
+        params: {},
+        loadingText: '加载中...',
       }
     },
     computed: {
@@ -138,15 +141,47 @@
       },
       showAddress() {
       },
+      doSearch() {
+        this.getDataWithParams()
+      },
       addressOnChange() {
         this.province = this.getName(this.address).split(' ')[0]
         this.city = this.getName(this.address).split(' ')[1]
+        this.params.city = this.city
+        this.getDataWithParams()
       },
       industryOnChange() {
-        console.log(this.industry)
+        this.getDataWithParams()
       },
       getName(value) {
         return value2name(value, ChinaAddressV4Data)
+      },
+      getDataWithParams() {
+        /* eslint-disable */
+        let params = []
+        if (this.city !== '全国') {
+          this.params.city = this.city
+        }
+        if (this.industry[0] !== '全部行业') {
+          this.params.industry = this.industry[0]
+        }
+        if (this.textKey !== '') {
+          this.params.title = this.textKey
+        }
+        this.getListWithParams(this.params).then((res) => {
+          this.$vux.loading.hide()
+          if (res) {
+            this.pageData = res
+            this.originList = res
+          } else {
+            this.pageData = []
+            this.originList = []
+            this.loadingText = '抱歉, 暂无相关信息.'
+          }
+        })
+      },
+      gotoHome() {
+        this.$router.push('/home')
       },
     },
     created() {
@@ -159,6 +194,7 @@
         } else {
           this.pageData = []
           this.originList = []
+          this.loadingText = '抱歉, 暂无相关信息.'
         }
       })
     },

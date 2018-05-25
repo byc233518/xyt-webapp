@@ -19,6 +19,9 @@ import {
   Group,
   XAddress,
   PopupPicker,
+  Toast,
+  Tab,
+  TabItem,
 } from 'vux';
 
 const options = {
@@ -42,6 +45,9 @@ const options = {
   Group,
   XAddress,
   PopupPicker,
+  Toast,
+  Tab,
+  TabItem,
 };
 /* eslint-disable */
 options.install = (Vue) => {

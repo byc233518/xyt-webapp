@@ -1,6 +1,39 @@
 <template>
-  <div class="login">
+  <div>
+    <div>
+      <div class="register" v-if="loginPage">
+        <p class="tc m-t-100"> 完善个人信息 </p>
+        <div class="p-20">
+          <group title="">
+            <x-input required title="手机号码"
+                     v-model="tel"
+                     :max="11" is-type="china-mobile"></x-input>
+            <x-input required type="number" title="年龄" v-model="age" :max="2"></x-input>
+            <x-input required title="技能" v-model="skill" placeholder="多个请用空格隔开"></x-input>
+          </group>
 
+          <x-button @click.native="submit" class="m-t-50">提交</x-button>
+        </div>
+      </div>
+      <div class="login" v-else>
+        <p class="tc"> 登录页面</p>
+        <div class="p-20">
+          <group title="">
+            <x-input required title="手机号码"
+                     v-model="tel"
+                     :max="11" is-type="china-mobile"></x-input>
+            <x-input required title="密码"
+                     v-model="password"></x-input>
+          </group>
+          <div class="tr">
+            <a href="javascript:;" @click="forgetPassword">忘记密码 </a>
+            <span class="display-inline-block m-l-10 m-r-10">|</span>
+            <a href="javascript:;" @click="showRegister"> 注册</a>
+          </div>
+          <x-button @click.native="doLogin" class="m-t-20">登录</x-button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -10,107 +43,73 @@
 
   /* eslint-disable */
   export default {
-    name: 'App',
     components: {},
     data: () => {
       return {
-        center: {
-          lng: 113.9454378,
-          lat: 22.5427052,
-        },
-        anchorOffset: {
-          width: 10,
-          height: 60,
-        },
-        locationOffset: {
-          width: 10,
-          height: 140,
-        },
-        points: [],
-        circlePath: {
-          center: {
-            lng: 113.9454378,
-            lat: 22.5427052,
-          },
-          radius: 5000,
-        },
-        infoWindowText: 'info window',
-        infoWindowShow: false,
-        infoWindowId: 0,
-        infoWindowPosition: {
-          lng: 113.9454378,
-          lat: 22.5427052,
-        },
+        tel: '',
+        loginPage: true,
+        skill: '',
+        age: '',
       }
     },
     methods: {
-      clickHandler(e) {
-//        window.alert(`单击点的坐标为：${e.point.lng}, ${e.point.lat}`);
-        console.log(e)
-        this.infoWindowShow = true
-        this.infoWindowPosition = {
-          lng: e.point.lng,
-          lat: e.point.lat,
-        }
-        this.infoWindowText = e.point.title
-        this.infoWindowId = e.point.id
-      },
-      addPoints() {
-        const points = [];
-        this.getList().then((res) => {
-          this.$vux.loading.hide()
-          if (res && res.length) {
-            _.forEach(res, (item) => {
-              const position = {lng: item.lng, lat: item.lat, title: item.title, id: item._id}
-              points.push(position)
-            })
-          }
-        })
-        this.points = points
-      },
-      updateCirclePath(e) {
-        this.circlePath.center = e.target.getCenter()
-        this.circlePath.radius = e.target.getRadius()
-      },
-      infoWindowClose () {
-        this.infoWindowShow = false
-      },
       infoWindowOpen () {
         this.infoWindowShow = true
+      },
+      doLogin() {
+      },
+      doRegister() {
+      },
+      showRegister() {
+        this.loginPage = false
+      },
+      forgetPassword() {
+        this.$vux.alert.show({
+          content: '发送短信 <br/>"mm" 到 159 0201 9220',
+        })
+      },
+      submit() {
+        if (this.tel === '' || this.age === '' || this.skill === '') {
+          this.$vux.toast.show({type:'warn', text:'请完善信息'})
+          return
+        }
+        const that = this
+        this.$vux.confirm.show({
+          content: '确认信息真实无误并提交?',
+          onCancel() {
+            console.log(this) // 非当前 vm
+            console.log(that) // 当前 vm
+          },
+          onConfirm() {
+            that.saveUserInfo({
+              tel: this.tel,
+              age: this.age,
+              skill: this.skill,
+            }).then((res) => {
+              console.log(res)
+              that.$vux.loading.hide()
+              that.$vux.alert.show({
+                content: '发布成功, 3秒后自动跳转!',
+                onShow() {
+                  setTimeout(() => {
+                    that.$vux.alert.hide()
+                  }, 3000)
+                },
+                onHide() {
+                  /* eslint-disable */
+                  that.$router.push(`/detail/${ res._id }`)
+                },
+              })
+            })
+          },
+        })
       }
     },
     created() {
-      const self = this
-      let location = {
-        lng: 113.9454378,
-        lat: 22.5427052,
-      }
-      if (typeof(wx) !== 'undefined') {
-        wx.getLocation({
-          type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
-          success: function (res) {
-            const latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
-            const longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
-            if (res && res.latitude) {
-              location.lng = res.longitude
-              location.lat = res.latitude
-            }
-          }
-        });
-      } else {
-        navigator.geolocation.getCurrentPosition(function (position) {
-          console.log('position', position)
-          if (position && position.coords) {
-            location.lng = position.coords.longitude
-            location.lat = position.coords.latitude
-          }
-        }, function (err) {
-          console.log('err', err)
-        }, {maximumAge: 600000, timeout: 10000, enableHighAccuracy: false})
-      }
-      this.center = location
-      this.circlePath.center = location
-      console.log('circlePath', this.circlePath)
+//      this.getWxUserInfo().then((res) => {
+//        this.$vux.alert.show(JSON.stringify(res))
+//      })
+//      location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx185463cc92b5ca47&redirect_uri=${urlencode(location.href)}&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect`
     },
     mixins: [ApiMixins, FnMixins],
   }

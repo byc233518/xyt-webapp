@@ -15,13 +15,20 @@
       </group>
       <group>
         <x-address hide-district
-                   title="所属城市"
+                   title="所在城市"
                    :raw-value=true
                    v-model="province_city"
                    @on-hide="addressOnChange"
                    placeholder="请选择"
                    :list="addressData"
         ></x-address>
+      </group>
+      <group>
+        <popup-picker :data='industrys'
+                      title="所属行业"
+                      v-model='job.industry'
+                      @on-change='industryOnChange'
+        ></popup-picker>
       </group>
       <group>
         <x-textarea title="介绍" v-model="job.desc" :rows=10></x-textarea>
@@ -58,13 +65,27 @@
           requirement: '',
           company_name: '',
           company_id: 0,
+          industry: [],
         },
+        industrys: [['服务行业', '建筑行业', '农林牧业', '其他行业']],
         province_city: [],
         addressData: ChinaAddressV4Data,
       }
     },
     methods: {
       submit() {
+        if ((this.job.num === '')
+          || (this.job.title === '')
+          || (this.job.desc === '')
+          || (this.job.company_name === '')
+          || (this.job.tel === '')
+          || (this.job.salary === '')) {
+          this.$vux.toast.show({
+            text: '请完善信息',
+            type: 'warn',
+          })
+          return
+        }
         const that = this
         this.$vux.confirm.show({
           content: '确认信息真实无误并发布?',
@@ -99,27 +120,11 @@
       getName(value) {
         return value2name(value, ChinaAddressV4Data)
       },
+      industryOnChange() {
+      }
     },
     created() {
-      if (wx) {
-        wx.ready(() => {
-//                wx.invoke('getLocation', 'openLocation', {}, function(res) {
-//                    //alert(res.err_msg + "唯一");
-//                });
-          wx.getLocation({
-            success: () => {
-//                                console.log(res)
-//            that.pointY = res.latitude; // 纬度，浮点数，范围为90 ~ -90
-//            that.pointX = res.longitude; // 经度，浮点数，范围为180 ~ -180。
-//
-//            that.point = new BMap.Point(that.pointX, that.pointY);
-//            that.marker = new BMap.Marker(that.point); // 创建点
-            },
-            cancel: () => {
-            },
-          });
-        })
-      }
+      const that = this
     },
     mixins: [ApiMixins],
   }

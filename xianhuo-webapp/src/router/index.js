@@ -13,13 +13,13 @@ Vue.use(Router)
 const routers = new Router({
   // mode: 'history',
   routes: [
-    {
-      path: '/',
-      name: '',
-      component(resolve) {
-        require(['../views/list'], resolve)
-      },
-    },
+    // {
+    //   path: '/',
+    //   name: '',
+    //   component(resolve) {
+    //     require(['../views/list'], resolve)
+    //   },
+    // },
     {
       path: '/index',
       name: 'index',
@@ -83,6 +83,20 @@ const routers = new Router({
         require(['../views/publishjob'], resolve)
       },
     },
+    {
+      path: '/login',
+      name: 'login',
+      component(resolve) {
+        require(['../views/login'], resolve)
+      },
+    },
+    {
+      path: '/getWxFile',
+      name: 'login',
+      component(resolve) {
+        require(['../views/getWxFile'], resolve)
+      },
+    },
     // {
     //   path: '/publishjob',
     //   name: 'publishjob',
@@ -122,6 +136,8 @@ routers.beforeEach(function (to, from, next) {
   } else {
     next()
   }
+
+  window.scrollTo(0,0)
 })
 
 export default routers
