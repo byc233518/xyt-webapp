@@ -15,7 +15,7 @@ const menus = {
 		}, {
 			'name': '信活官网',
 			"type": "view",
-			"url": "http://web.ngrok.xetong.cn/xianhuo-webapp/"
+			"url": "http://web.ngrok.xetong.cn/#/list"
 		}]
 	}, {
 		'name': '我的信活',

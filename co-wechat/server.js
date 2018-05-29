@@ -31,7 +31,7 @@ app.use(cors()) // 跨域插件
 // 公众号被动回复相关
 const help = `感谢您关注 微信版!!
 回复 语音 或	文字 查找相关内容,
-或者到 <a href='https://www.xetong.cn/xianhuo-webapp'>首页</a> 去看看`;
+或者到 <a href='https://xinhuo.xetong.cn/list'>首页</a> 去看看`;
 
 const wxReply = async (message, ctx) => {
 	console.log('message', message)
@@ -76,7 +76,7 @@ const wxReply = async (message, ctx) => {
 							title: item.title,
 							description: item.desc,
 							picUrl: item.thumbnail,
-							url: `http://web.ngrok.xetong.cn/#/detail/${item._id}`
+							url: `http://web.ngrok.xetong.cn/#/detail/${item._id} `
 						})
 					});
 				})
@@ -160,7 +160,7 @@ const getWxUserInfo = async (openid, lang = 'zh_CN') => {
 }
 
 router.get('/list', async (ctx) => { // 获取工作列表
-	let list = await jobList.find();
+	let list = await jobList.find({}, {limit: 20, skip: 1});
 	ctx.response.type = 'application/json';
 	ctx.body = list;
 })

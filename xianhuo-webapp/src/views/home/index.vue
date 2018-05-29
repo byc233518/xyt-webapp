@@ -6,14 +6,11 @@
 </template>
 
 <script>
-  /* eslint-disable */
-  import item from './tree.vue'
-
   export default {
-    components: {item},
+    components: {},
     data() {
       return {}
-    }
+    },
   }
 </script>
 

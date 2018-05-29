@@ -50,13 +50,15 @@
             </div>
             <div class="flex-1">
               <a href="javascript:;" data-selector="industrys-select" class="active selected">
+                <span class="ellipsis-1">
                 <popup-picker :data='industrys'
                               v-model='industry'
                               placeholder="请选择行业"
                               @on-change='industryOnChange'
                 ></popup-picker>
+                </span>
                 <!--<span class="ellipsis-1">{{industry}}</span>-->
-                <i class="text-icon icon-narrow-down"></i>
+                <!--<i class="text-icon icon-narrow-down"></i>-->
               </a>
             </div>
           </div>
@@ -65,7 +67,8 @@
     </section>
 
     <div class="job-card-wrap">
-      <div v-if="pageData && pageData.length" class="job-card" v-for="(item, key) in pageData" @click="linkTo(`detail/${item._id}`)">
+      <div v-if="pageData && pageData.length" class="job-card" v-for="(item, key) in pageData"
+           @click="linkTo(`detail/${item._id}`)">
         <dl class="clearfix">
           <dt class="job-card-logo">
             <img :src=item.thumbnail alt=""
@@ -123,8 +126,7 @@
         loadingText: '加载中...',
       }
     },
-    computed: {
-    },
+    computed: {},
     methods: {
       searchOnChange(event) {
         const keyText = event.target.value
@@ -199,8 +201,7 @@
       })
     },
     /* eslint-disable */
-    watch: {
-    },
+    watch: {},
     mixins: [ApiMixins, FnMixins],
   }
 </script>
