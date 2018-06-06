@@ -97,13 +97,27 @@ const routers = new Router({
         require(['../views/getWxFile'], resolve)
       },
     },
-    // {
-    //   path: '/publishjob',
-    //   name: 'publishjob',
-    //   component(resolve) {
-    //     require(['../views/publishjob'], resolve)
-    //   },
-    // },
+    {
+      path: '/userinfo',
+      name: 'userinfo',
+      component(resolve) {
+        require(['../views/home/userinfo'], resolve)
+      },
+    },
+    {
+      path: '/aboutus',
+      name: 'aboutus',
+      component(resolve) {
+        require(['../views/home/aboutus'], resolve)
+      },
+    },
+    {
+      path: '/feedback',
+      name: 'feedback',
+      component(resolve) {
+        require(['../views/home/feedback'], resolve)
+      },
+    },
   ],
 })
 

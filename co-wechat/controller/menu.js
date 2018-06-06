@@ -16,7 +16,11 @@ const menus = {
 			'name': '信活官网',
 			"type": "view",
 			"url": "http://web.ngrok.xetong.cn/#/list"
-		}]
+		},{
+				'name': '服务中心',
+				"type": "view",
+				"url": "http://web.ngrok.xetong.cn/#/servicecenter"
+			}]
 	}, {
 		'name': '我的信活',
 		'sub_button': [{

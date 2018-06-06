@@ -13,7 +13,8 @@ const bodyParser = require('koa-bodyparser')
 const db = new Monk('39.108.77.185:27018/xianhuo');
 const jobList = db.get('list');
 const company = db.get('company');
-const user = db.get('user'); // 用户表
+const user = db.get('user');
+const feedback = db.get('feedback');
 
 const wxMenu = require('./controller/menu')
 const config = require('./config')
@@ -21,7 +22,7 @@ const wx = require('./util/wx')
 
 const app = new Koa()
 app.use(bodyParser()) // 解析 request body
-app.use(cors()) // 跨域插件
+app.use(cors()) // 跨域插件.
 
 // 公众号自定义菜单
 // wxMenu.deleteMenu().then(() => {
@@ -31,7 +32,7 @@ app.use(cors()) // 跨域插件
 // 公众号被动回复相关
 const help = `感谢您关注 微信版!!
 回复 语音 或	文字 查找相关内容,
-或者到 <a href='https://xinhuo.xetong.cn/list'>首页</a> 去看看`;
+或者到 <a href='http://web.ngrok.xetong.cn/#/list'>首页</a> 去看看`;
 
 const wxReply = async (message, ctx) => {
 	console.log('message', message)
@@ -43,18 +44,28 @@ const wxReply = async (message, ctx) => {
 			}
 		} else if (message.Event === 'CLICK') {
 			if (message.EventKey === 'intelligent_search') {
-				let news = []
-				await jobList.find({}, {limit: 3, skip: 5}).then((res) => {
-					res.forEach((item) => {
-						news.push({
-							title: item.title,
-							description: item.desc,
-							picUrl: item.thumbnail,
-							url: `http://web.ngrok.xetong.cn/#/detail/${item._id}`
-						})
-					});
-				})
-				return news;
+				// let news = []
+				// await jobList.find({}, {limit: 3, skip: 5}).then((res) => {
+				// 	res.forEach((item) => {
+				// 		news.push({
+				// 			title: item.title,
+				// 			description: item.desc,
+				// 			picUrl: item.thumbnail,
+				// 			url: `http://web.ngrok.xetong.cn/#/detail/${item._id}`
+				// 		})
+				// 	});
+				// })
+				// return news;
+				return {
+					content: `点击左下角键盘切换至输入模式,把你感兴趣的职位告诉我吧!
+					
+输入职位名称, 如: '财务总监',
+输入公司名称, 如: '信活',
+或者一起搜索, 如: '信活 财务总监'.
+
+现在就试试看吧, 记得搜索某地区的职位中间有空格哦~`,
+					type: 'text'
+				}
 			} else if (message.EventKey === 'job_recommendation') {
 				let news = []
 				await jobList.find({}, {limit: 3, skip: 0}).then((res) => {
@@ -82,16 +93,49 @@ const wxReply = async (message, ctx) => {
 				})
 				return news;
 			} else if (message.EventKey === 'bind_account') {
-				let info = await getWxUserInfo(message.FromUserName, 'zh_CN')
-				return {
-					content: info,
-					type: 'text'
+				let isBind = await user.find({openid: message.FromUserName}).then((res) => {
+					return res.length !== 0
+				})
+				if (isBind) {
+					return {
+						content: `你已经绑定过了,不需要重复绑定了, 可以到 <a href='http://web.ngrok.xetong.cn/#/home'> 个人页面 </a> 去完善相关信息`,
+						type: 'text'
+					}
+				} else {
+					await getWxUserInfo(message.FromUserName, 'zh_CN').then((userRes) => {
+						const info = JSON.parse(userRes)
+						const obj = {
+							openid: info.openid,
+							nickname: info.nickname,
+							sex: info.sex,
+							city: info.city,
+							province: info.province,
+							headimgurl: info.headimgurl,
+							subscribe_time: info.subscribe_time,
+							subscribe_scene: info.subscribe_scene,
+							remark: info.remark,
+						}
+						user.insert(obj)
+					})
+					return {
+						ontent: `绑定成功! 您可以到 <a href=\'http://web.ngrok.xetong.cn/#/home'> 个人页面 </a> 去完善相关信息`,
+						type: 'text'
+					}
 				}
 			} else if (message.EventKey === 'intelligent_search') {
 				return {
 					content: help,
 					type: 'text'
 				}
+			} else if (message.EventKey === 'intelligent_search') {
+				return [
+					{
+						title: '刷新成功',
+						description: '恭喜刷新成功',
+						picUrl: '',
+						url: `http://web.ngrok.xetong.cn/#/detail/${item._id} `
+					}
+				]
 			}
 		}
 	} else if (message.MsgType === 'text') {
@@ -136,11 +180,15 @@ router.get('/wx', wechat(config.wx).middleware(wxReply))
 router.post('/wx', wechat(config.wx).middleware(wxReply))
 
 router.post('/getWxUserInfo/', async (ctx) => {
-	const url = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx185463cc92b5ca47&redirect_uri=${urlencode(ctx.request.body.url)}&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect`
-	console.log(11111111111, url)
-	let res = await rp(url);
-	ctx.response.type = 'text/html';
-	ctx.body = res;
+	const getTokenUrl = `https://api.weixin.qq.com/sns/oauth2/access_token?appid=${config.wx.appid}&secret=${config.wx.appsecret}&code=${ctx.request.body.code}&grant_type=authorization_code`
+	let openID = await rp(getTokenUrl).then((tokenRes) => {
+		const token = JSON.parse(tokenRes)
+		return token.openid
+	})
+	await user.find({openid: openID}).then((userInfo) => {
+		ctx.response.type = 'application/json';
+		ctx.body = userInfo
+	})
 })
 
 const getWxUserInfo = async (openid, lang = 'zh_CN') => {
@@ -183,8 +231,6 @@ router.post('/list-with-params', async (ctx) => { // 按 条件 获取工作
 	if(reqParams.title) {
 		params = {$or:[{"title":new RegExp(reqParams.title,'ig')}]}
 	}
-	console.log(reqParams)
-	console.log(params)
 	let res = await jobList.find(params);
 	ctx.response.type = 'application/json';
 	ctx.body = res;
@@ -252,6 +298,18 @@ router.post('/company', async (ctx) => { // 新增公司
 	ctx.body = saveRes;
 })
 
+router.post('/feedback/', async (ctx) => {
+	const reqParams = ctx.request.body
+	let obj = {
+		subject: reqParams.subject || '',
+		content: reqParams.content || '',
+		openid: reqParams.openid || '',
+		time: Date.now(),
+	}
+	let saveRes = await feedback.insert(obj)
+	ctx.body = saveRes;
+})
+
 // router.post('/list', async ( ctx ) => {
 // 	const reqParams = ctx.request.body
 //
@@ -273,7 +331,6 @@ router.get('/crawl', (ctx) => {
 		let $ = cheerio.load(res.text);
 		$('#infolist dl').each((i, elem) => {
 			const url = $(elem).find('dt a').attr('href')
-			console.log(url)
 			if (url) {
 				superagent.get(url).end((childErr, childRes) => {
 					let $ = cheerio.load(childRes.text);

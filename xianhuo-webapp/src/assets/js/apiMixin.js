@@ -1,7 +1,7 @@
 import axois from 'axios'
 
-const isDebug = true
-const domain = isDebug ? 'http://localhost:8360' : 'http://39.108.77.185:9000'
+const isDebug = false
+const domain = isDebug ? 'http://localhost:8360' : 'http://wx.ngrok.xetong.cn'
 const apiMixins = {
   handleReqError(req) {
     this.$vux.loading.hide()
@@ -134,11 +134,21 @@ const apiMixins = {
       return err
     }
   },
-  async getWxUserInfo() {
+  async getWxUserDetail(params) {
     try {
       // this.handleReqError(req)
-      // const res = await axois.get(`https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx185463cc92b5ca47&redirect_uri=${urlencode(location.href)}&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect`)
-      const res = await axois.post(`${domain}/getWxUserInfo/`, { url: location.href })
+      const res = await axois.post(`${domain}/getWxUserInfo/`, params)
+      console.log(res)
+      return res.data
+    } catch (err) {
+      // this.handleCatchError(err)
+      return err
+    }
+  },
+  async saveFeedBack(params) {
+    try {
+      const res = await axois.post(`${domain}/feedback/`, params)
+      console.log(res)
       return res.data
     } catch (err) {
       // this.handleCatchError(err)

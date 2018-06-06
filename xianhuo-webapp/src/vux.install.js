@@ -22,6 +22,7 @@ import {
   Toast,
   Tab,
   TabItem,
+  Cell,
 } from 'vux';
 
 const options = {
@@ -48,6 +49,7 @@ const options = {
   Toast,
   Tab,
   TabItem,
+  Cell,
 };
 /* eslint-disable */
 options.install = (Vue) => {

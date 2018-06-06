@@ -17,9 +17,8 @@
                   <span><i class="text-icon icon-position"></i><b>职位</b></span> <span><i
                   class="text-icon icon-company"></i><b>公司</b></span>
                 </div>
-                <input data-selector="search-type" value="0" type="hidden">
               </div>
-              <input name="textKey" type="text" placeholder="请输入职位名称" v-model="textKey">
+              <input name="textKey" type="text" placeholder="请输入职位名称" v-model="textKey" @keyup.13="searchKeyUp($event)">
               <i class="text-icon icon-close clear-input-btn" style="display: none;"></i></div>
             <div class="go">
               <i class="text-icon icon-search"></i>
@@ -184,6 +183,9 @@
       },
       gotoHome() {
         this.$router.push('/home')
+      },
+      searchKeyUp(event) {
+        alert(event.target.value)
       },
     },
     created() {
