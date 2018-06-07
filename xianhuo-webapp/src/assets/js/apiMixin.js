@@ -155,6 +155,16 @@ const apiMixins = {
       return err
     }
   },
+  async saveJobRequest(params) {
+    try {
+      const res = await axois.post(`${domain}/savejobrequest/`, params)
+      console.log(res)
+      return res.data
+    } catch (err) {
+      // this.handleCatchError(err)
+      return err
+    }
+  },
 }
 
 export default {

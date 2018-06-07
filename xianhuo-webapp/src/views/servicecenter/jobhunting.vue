@@ -4,11 +4,11 @@
     <p class="tc">请您提供以下信息给到我们</p>
     <div class="p-20">
       <group title="">
-        <x-input title="姓 名" v-model="username"></x-input>
-        <x-input title="电 话" v-model="mobilephone" :max="11" is-type="china-mobile"></x-input>
+        <x-input title="姓 名" v-model="name"></x-input>
+        <x-input title="电 话" v-model="tel" :max="11" is-type="china-mobile"></x-input>
       </group>
       <group>
-        <x-textarea title="意向说明" v-model="desc" :rows=10></x-textarea>
+        <x-textarea title="意向说明" v-model="request" :rows=10></x-textarea>
       </group>
       <x-button @click.native="submit" class="m-t-20">提交</x-button>
     </div>
@@ -23,26 +23,56 @@
     components: {},
     data: () => {
       return {
-        mobilephone: null,
-        username: null,
-        desc: null,
+        tel: '',
+        name: '',
+        request: '',
+        openid: '',
       }
     },
     methods: {
       submit() {
-        this.$vux.alert.show({
-          title: '提示',
-          content: '提交成功!',
-          onShow() {
-            console.log('Plugin: I\'m showing')
+        const that = this
+        if (that.name === '' || that.tel === '' || that.request === '') {
+          const that = this
+          this.$vux.toast.show({
+            type: 'warn',
+            text: '请填写完整信息!',
+          })
+          return
+        }
+        this.$vux.confirm.show({
+          content: '确定提交?',
+          onCancel() {
           },
-          onHide() {
-            console.log('Plugin: I\'m hiding')
+          onConfirm() {
+            that.saveJobRequest({
+              name: that.name,
+              tel: that.tel,
+              request: that.request,
+            }).then((res) => {
+              console.log(res)
+              that.$vux.loading.hide()
+              that.$vux.alert.show({
+                content: '提交成功!',
+                onShow() {
+                  setTimeout(() => {
+                    that.$vux.alert.hide()
+                  }, 3000)
+                },
+                onHide() {
+                  /* eslint-disable */
+                  history.back()
+                },
+              })
+            })
           },
         })
       },
     },
     created() {
+      this.$vlf.getItem('wxUserInfo').then((res) => {
+        this.openid = res.openid
+      })
     },
     mixins: [ApiMixins, FnMixins],
   }

@@ -15,6 +15,7 @@ const jobList = db.get('list');
 const company = db.get('company');
 const user = db.get('user');
 const feedback = db.get('feedback');
+const jobRequest = db.get('jobrequest');
 
 const wxMenu = require('./controller/menu')
 const config = require('./config')
@@ -22,7 +23,7 @@ const wx = require('./util/wx')
 
 const app = new Koa()
 app.use(bodyParser()) // 解析 request body
-app.use(cors()) // 跨域插件.
+app.use(cors()) // 跨域插件
 
 // 公众号自定义菜单
 // wxMenu.deleteMenu().then(() => {
@@ -307,6 +308,19 @@ router.post('/feedback/', async (ctx) => {
 		time: Date.now(),
 	}
 	let saveRes = await feedback.insert(obj)
+	ctx.body = saveRes;
+})
+
+router.post('/savejobrequest/', async (ctx) => {
+	const reqParams = ctx.request.body
+	let obj = {
+		name: reqParams.name || '',
+		tel: reqParams.tel || '',
+		openid: reqParams.openid || '',
+		request: reqParams.request || '',
+		time: Date.now(),
+	}
+	let saveRes = await jobRequest.insert(obj)
 	ctx.body = saveRes;
 })
 
