@@ -61,10 +61,9 @@ const wxReply = async (message, ctx) => {
 					content: `点击左下角键盘切换至输入模式,把你感兴趣的职位告诉我吧!
 					
 输入职位名称, 如: '财务总监',
-输入公司名称, 如: '信活',
-或者一起搜索, 如: '信活 财务总监'.
+或语音回复相关关键词,
 
-现在就试试看吧, 记得搜索某地区的职位中间有空格哦~`,
+现在就试试看吧~`,
 					type: 'text'
 				}
 			} else if (message.EventKey === 'job_recommendation') {
@@ -128,13 +127,13 @@ const wxReply = async (message, ctx) => {
 					content: help,
 					type: 'text'
 				}
-			} else if (message.EventKey === 'intelligent_search') {
+			} else if (message.EventKey === 'refresh_resume') {
 				return [
 					{
 						title: '刷新成功',
-						description: '恭喜刷新成功',
+						description: '简历刷新成功',
 						picUrl: '',
-						url: `http://web.ngrok.xetong.cn/#/detail/${item._id} `
+						url: '',
 					}
 				]
 			}
@@ -209,7 +208,7 @@ const getWxUserInfo = async (openid, lang = 'zh_CN') => {
 }
 
 router.get('/list', async (ctx) => { // 获取工作列表
-	let list = await jobList.find({}, {limit: 20, skip: 1});
+	let list = await jobList.find({}, {sort: {"date": -1}, limit: 10});
 	ctx.response.type = 'application/json';
 	ctx.body = list;
 })
@@ -223,16 +222,16 @@ router.get('/list/:id', async (ctx) => { // 按 ID 获取工作
 router.post('/list-with-params', async (ctx) => { // 按 条件 获取工作
 	const reqParams = ctx.request.body
 	let params = {}
-	if (reqParams.industry !== '全部行业') {
+	if (reqParams.industry !== '不限行业') {
 		params.industry = reqParams.industry
 	}
-	if (reqParams.city !== '全国') {
+	if (reqParams.city !== '不限地区') {
 		params.city = reqParams.city
 	}
 	if(reqParams.title) {
 		params = {$or:[{"title":new RegExp(reqParams.title,'ig')}]}
 	}
-	let res = await jobList.find(params);
+	let res = await jobList.find(params, {limit: 10});
 	ctx.response.type = 'application/json';
 	ctx.body = res;
 })
@@ -249,6 +248,12 @@ router.delete('/list/:id', async (ctx) => { // 按 ID 删除工作
 	ctx.body = item;
 })
 
+router.get('/user/:openid', async (ctx) => { // 按 ID 删除工作
+	let item = await user.find({openid: ctx.params.openid});
+	ctx.response.type = 'application/json';
+	ctx.body = item;
+})
+
 
 router.post('/list', async (ctx) => { // 新增工作
 	const reqParams = ctx.request.body
@@ -259,7 +264,7 @@ router.post('/list', async (ctx) => { // 新增工作
 		tel: reqParams.tel || '',
 		city: reqParams.city || '',
 		desc: reqParams.desc || '',
-		date: reqParams.date || '',
+		date: Date.now(),
 		title: reqParams.title || '',
 		salary: reqParams.salary || '',
 		address: reqParams.address || '',
@@ -267,6 +272,8 @@ router.post('/list', async (ctx) => { // 新增工作
 		requirement: reqParams.requirement || '',
 		company_name: reqParams.company_name || '',
 		company_id: reqParams.company_id || '',
+		thumbnail: reqParams.thumbnail || '',
+		industry: reqParams.industry || '',
 	}
 	let saveRes = await jobList.insert(obj)
 	ctx.body = saveRes;
@@ -322,6 +329,29 @@ router.post('/savejobrequest/', async (ctx) => {
 	}
 	let saveRes = await jobRequest.insert(obj)
 	ctx.body = saveRes;
+})
+
+router.post('/saveuserinfo/', async (ctx) => {
+	console.log(ctx.request.body)
+	const openid = ctx.request.body.openid
+	const reqParams = ctx.request.body
+	let saveRes = await user.update({openid: openid}, {$set: {
+		age: reqParams.age,
+		sex: reqParams.sex,
+		realName: reqParams.realName,
+		tel: reqParams.tel,
+		skills: reqParams.skills,
+		resume: reqParams.resume,
+		eduexperience: reqParams.eduexperience,
+	}})
+	ctx.body = saveRes;
+})
+
+router.post('/skills/', async (ctx) => {
+	const reqParams = ctx.request.body
+	let res = await jobList.find({}, {limit: 10});
+	ctx.response.type = 'application/json';
+	ctx.body = res;
 })
 
 // router.post('/list', async ( ctx ) => {

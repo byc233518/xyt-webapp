@@ -32,11 +32,10 @@
         </p>
         <div class="job-conditon">
           <p>地区: <a>{{jobData.city}}</a></p>
-          <p>经验要求: 有经验</p>
-          <p>学历要求: 无要求</p>
+          <p>发布时间: {{jobData.date}}</p>
         </div>
         <!-- 福利标签 -->
-        <a href="tel: 13333333333" class="btn-apply-job" data-selector="apply">立即联系</a>
+        <a :href="['tel:' + jobData.tel]"  class="btn-apply-job" data-selector="apply">立即联系</a>
       </section>
 
       <section class="company-info">
@@ -48,31 +47,32 @@
             <h2 class="ellipsis-1">
               {{jobData.company_name}}
             </h2>
+            <p>{{jobData.address}}</p>
             <!--<p class="muted ellipsis-1">-->
               <!--<a href="https://m.liepin.com/ruanjian/" class="industry-link"-->
                  <!--data-selector="return-url">{{companyData.industry}}</a>-->
               <!--&nbsp;&nbsp;{{companyData.scale}}</p>-->
           </div>
-          <i class="text-icon icon-go-ahead"></i>
+          <!--<i class="text-icon icon-go-ahead"></i>-->
         </div>
 
-        <p class="company-address" data-selector="look-map" @click="toggleMap">{{jobData.address}}<span
-          data-selector="tips-text">查看地图</span><i class="text-icon icon-address"></i></p>
-        <div v-show="showMap">
-          <baidu-map class="map"
-                     :center="center"
-                     :zoom="zoom"
-                     @ready="mapReady"
-          >
-            <bm-marker
-              :position="'深圳市南山区高新南一道8号创维大厦'"
-              :dragging="true"
-              animation="BMAP_ANIMATION_BOUNCE"
-            >
-            </bm-marker>
-            <bm-navigation anchor="BMAP_ANCHOR_BOTTOM_RIGHT"></bm-navigation>
-          </baidu-map>
-        </div>
+        <!--<p class="company-address" data-selector="look-map" @click="toggleMap">{{jobData.address}}<span-->
+          <!--data-selector="tips-text">查看地图</span><i class="text-icon icon-address"></i></p>-->
+        <!--<div v-show="showMap">-->
+          <!--<baidu-map class="map"-->
+                     <!--:center="center"-->
+                     <!--:zoom="zoom"-->
+                     <!--@ready="mapReady"-->
+          <!--&gt;-->
+            <!--<bm-marker-->
+              <!--:position="'深圳市南山区高新南一道8号创维大厦'"-->
+              <!--:dragging="true"-->
+              <!--animation="BMAP_ANIMATION_BOUNCE"-->
+            <!--&gt;-->
+            <!--</bm-marker>-->
+            <!--<bm-navigation anchor="BMAP_ANCHOR_BOTTOM_RIGHT"></bm-navigation>-->
+          <!--</baidu-map>-->
+        <!--</div>-->
 
       </section>
       <section class="job-detail-list">
@@ -96,6 +96,7 @@
 </template>
 
 <script>
+  import moment from 'moment'
   import ApiMixins from '../../assets/js/apiMixin'
 
   export default {
@@ -137,11 +138,11 @@
       },
     },
     created() {
-      console.log(this.$route.params.id)
       this.getDetailById(this.$route.params.id).then((res) => {
         this.$vux.loading.hide()
         if (res) {
           this.jobData = res
+          this.jobData.date = moment(this.jobData.date).format('YYYY-MM-DD')
 
           this.getCompanyByName(res.company_name).then((companyRes) => {
             this.$vux.loading.hide()

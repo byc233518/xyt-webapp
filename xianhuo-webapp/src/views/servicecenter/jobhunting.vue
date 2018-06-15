@@ -33,7 +33,6 @@
       submit() {
         const that = this
         if (that.name === '' || that.tel === '' || that.request === '') {
-          const that = this
           this.$vux.toast.show({
             type: 'warn',
             text: '请填写完整信息!',

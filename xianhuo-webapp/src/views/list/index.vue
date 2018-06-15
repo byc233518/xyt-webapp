@@ -48,16 +48,15 @@
               </a>
             </div>
             <div class="flex-1">
-              <a href="javascript:;" data-selector="industrys-select" class="active selected">
-                <span class="ellipsis-1">
+              <a href="javascript:;" class="active selected">
+                <div class="display-inline-block">
                 <popup-picker :data='industrys'
                               v-model='industry'
                               placeholder="请选择行业"
                               @on-change='industryOnChange'
                 ></popup-picker>
-                </span>
-                <!--<span class="ellipsis-1">{{industry}}</span>-->
-                <!--<i class="text-icon icon-narrow-down"></i>-->
+                </div>
+                <i class="text-icon icon-narrow-down"></i>
               </a>
             </div>
           </div>
@@ -98,7 +97,8 @@
 </template>
 
 <script>
-  import { ChinaAddressV4Data, Value2nameFilter as value2name } from 'vux'
+  import { Value2nameFilter as value2name } from 'vux'
+  import ChinaAddressV4Data from '../../assets/js/china_address_v4.json'
   import ApiMixins from '../../assets/js/apiMixin'
   import FnMixins from '../../assets/js/fnMixin'
   import CityPicker from '../../components/common/cityPicker.vue'
@@ -114,13 +114,13 @@
         originList: [],
         pageData: [],
         textKey: '',
-        city: '全国',
+        city: '不限',
         province: '',
         address: [],
         showAddressPicker: false,
         addressData: ChinaAddressV4Data,
-        industry: ['全部行业'],
-        industrys: [['全部行业', '农林牧业', '服务行业', '建筑行业', '其他行业']],
+        industry: ['不限行业'],
+        industrys: [['不限行业', '农林牧业', '服务行业', '建筑行业', '其他行业']],
         params: {},
         loadingText: '加载中...',
       }
@@ -140,15 +140,19 @@
       showAdderssPicker() {
         this.showAddressPicker = true
       },
-      showAddress() {
+      showAddress(ids, names) {
+//        this.address = names
+        if (names) {
+          this.province = names[0]
+          this.city = names[1] === '市辖区' ? names[0] : names[1]
+        } else {
+          this.city = '不限'
+        }
       },
       doSearch() {
         this.getDataWithParams()
       },
       addressOnChange() {
-        this.province = this.getName(this.address).split(' ')[0]
-        this.city = this.getName(this.address).split(' ')[1]
-        this.params.city = this.city
         this.getDataWithParams()
       },
       industryOnChange() {
@@ -158,20 +162,13 @@
         return value2name(value, ChinaAddressV4Data)
       },
       getDataWithParams() {
-        /* eslint-disable */
-        let params = []
-        if (this.city !== '全国') {
-          this.params.city = this.city
-        }
-        if (this.industry[0] !== '全部行业') {
-          this.params.industry = this.industry[0]
-        }
-        if (this.textKey !== '') {
-          this.params.title = this.textKey
-        }
-        this.getListWithParams(this.params).then((res) => {
+        this.getListWithParams({
+          city: this.city,
+          industry: this.industry[0],
+          textKey: this.textKey,
+        }).then((res) => {
           this.$vux.loading.hide()
-          if (res) {
+          if (res && res.length) {
             this.pageData = res
             this.originList = res
           } else {
@@ -184,12 +181,13 @@
       gotoHome() {
         this.$router.push('/home')
       },
-      searchKeyUp(event) {
-        alert(event.target.value)
+      searchKeyUp() {
+        this.getDataWithParams()
       },
     },
     created() {
       /* eslint-disable */
+//      this.city = '不限'
       this.getList().then((res) => {
         this.$vux.loading.hide()
         if (res) {
@@ -202,7 +200,6 @@
         }
       })
     },
-    /* eslint-disable */
     watch: {},
     mixins: [ApiMixins, FnMixins],
   }

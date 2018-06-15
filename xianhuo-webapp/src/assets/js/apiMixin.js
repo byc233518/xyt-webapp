@@ -138,7 +138,16 @@ const apiMixins = {
     try {
       // this.handleReqError(req)
       const res = await axois.post(`${domain}/getWxUserInfo/`, params)
-      console.log(res)
+      return res.data
+    } catch (err) {
+      // this.handleCatchError(err)
+      return err
+    }
+  },
+  async getUserByOpenid(openid) {
+    try {
+      // this.handleReqError(req)
+      const res = await axois.get(`${domain}/user/${openid}`)
       return res.data
     } catch (err) {
       // this.handleCatchError(err)
@@ -158,6 +167,26 @@ const apiMixins = {
   async saveJobRequest(params) {
     try {
       const res = await axois.post(`${domain}/savejobrequest/`, params)
+      console.log(res)
+      return res.data
+    } catch (err) {
+      // this.handleCatchError(err)
+      return err
+    }
+  },
+  async getSkills(params) {
+    try {
+      const res = await axois.post(`${domain}/skills/`, params)
+      console.log(res)
+      return res.data
+    } catch (err) {
+      // this.handleCatchError(err)
+      return err
+    }
+  },
+  async saveUserInfo(params) {
+    try {
+      const res = await axois.post(`${domain}/saveuserinfo/`, params)
       console.log(res)
       return res.data
     } catch (err) {

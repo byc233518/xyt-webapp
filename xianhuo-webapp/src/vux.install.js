@@ -23,6 +23,7 @@ import {
   Tab,
   TabItem,
   Cell,
+  Radio,
 } from 'vux';
 
 const options = {
@@ -50,6 +51,7 @@ const options = {
   Tab,
   TabItem,
   Cell,
+  Radio,
 };
 /* eslint-disable */
 options.install = (Vue) => {
