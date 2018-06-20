@@ -26,9 +26,9 @@ app.use(bodyParser()) // 解析 request body
 app.use(cors()) // 跨域插件
 
 // 公众号自定义菜单
-// wxMenu.deleteMenu().then(() => {
-// 	wxMenu.createMenu()
-// });
+wxMenu.deleteMenu().then(() => {
+	wxMenu.createMenu()
+});
 
 // 公众号被动回复相关
 const help = `感谢您关注 微信版!!
@@ -162,11 +162,29 @@ const wxReply = async (message, ctx) => {
 		})
 		return news;
 	} else if (message.MsgType === 'voice') {
-		const voiceText = message.Recognition
-		return {
-			content: voiceText,
-			type: 'text'
-		};
+		const voiceText = message.Recognition.replace(/。/, '')
+		console.log(voiceText)
+		let news = []
+		await jobList.find({$or:[{"title":new RegExp(voiceText,'ig')}]}, {limit: 5}).then((res) => {
+			if (res && res.length) {
+				res.forEach((item) => {
+					news.push({
+						title: item.title,
+						description: item.desc,
+						picUrl: item.thumbnail,
+						url: `http://web.ngrok.xetong.cn/#/detail/${item._id}`
+					})
+				});
+			} else {
+				news.push({
+					title: '抱歉, 未找到相关信息',
+					description: '',
+					picUrl: '',
+					url: ''
+				})
+			}
+		})
+		return news;
 	}
 };
 

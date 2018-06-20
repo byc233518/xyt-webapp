@@ -37,7 +37,7 @@ const menus = {
 		'sub_button': [{
 			'name': '免费发布职位',
 			"type": "view",
-			"url": "http://web.ngrok.xetong.cn/xianhuo-webapp/#/publishjob"
+			"url": "http://web.ngrok.xetong.cn/#/publishjob"
 		}]
 	}]
 }

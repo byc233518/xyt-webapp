@@ -30,7 +30,7 @@
         <div class="filter-box">
           <div class="flexbox">
             <div class="flex-1">
-              <a href="javascript:;" @click="showAdderssPicker" class="active selected">
+              <a href="javascript:;" @click="showAdderssPicker" class="selected">
                 <span class="ellipsis-1">
                   <x-address style="display:none;"
                              hide-district
@@ -44,11 +44,11 @@
                   ></x-address>
                 </span>
                 {{city}}
-                <i class="text-icon icon-narrow-down"></i>
+                <i class="fa fa-chevron-right" style="color: #c8c8ce; font-size: .1rem; font-weight: 100;"></i>
               </a>
             </div>
-            <div class="flex-1">
-              <a href="javascript:;" class="active selected">
+            <div class="flex-1 industry-wrap">
+              <a href="javascript:;" class="selected">
                 <div class="display-inline-block">
                 <popup-picker :data='industrys'
                               v-model='industry'
@@ -56,7 +56,7 @@
                               @on-change='industryOnChange'
                 ></popup-picker>
                 </div>
-                <i class="text-icon icon-narrow-down"></i>
+                <!--<i class="text-icon icon-narrow-down"></i>-->
               </a>
             </div>
           </div>
@@ -84,7 +84,7 @@
                 <a class="ellipsis-1 company-name" onclick="return false;">{{item.company_name}}</a>
               </li>
               <li>
-                <time>{{item.date}}</time>
+                <time>{{dateFormat(item.date, 'YYYY-MM-DD')}}</time>
                 <a onclick="return false;">{{item.city}}</a>
               </li>
             </ul>
@@ -97,6 +97,7 @@
 </template>
 
 <script>
+  import moment from 'moment'
   import { Value2nameFilter as value2name } from 'vux'
   import ChinaAddressV4Data from '../../assets/js/china_address_v4.json'
   import ApiMixins from '../../assets/js/apiMixin'
@@ -183,6 +184,9 @@
       },
       searchKeyUp() {
         this.getDataWithParams()
+      },
+      dateFormat(date, formatter) {
+        return moment(date).format(formatter)
       },
     },
     created() {
@@ -337,11 +341,15 @@
   }
 
   .topbar .filter-box .flexbox > div > a.active {
-    color: #fc6621;
+    color: #fc6621 !important;
   }
 
   .vux-cell-box {
     display: inline-block;
+  }
+
+  .industry-wrap .weui-cell__ft {
+    display: none !important;
   }
 
 </style>
