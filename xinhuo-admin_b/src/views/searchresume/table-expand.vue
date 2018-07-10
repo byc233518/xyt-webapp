@@ -37,8 +37,5 @@
 		props: {
 			row: Object
 		},
-		data: {
-
-		}
 	};
 </script>

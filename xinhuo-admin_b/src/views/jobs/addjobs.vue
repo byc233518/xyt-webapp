@@ -152,8 +152,8 @@
 						params[key] = val
 					}
 				})
-				console.log(2, this.formValidate)
-				this.addJob(params).then((res) => {
+				console.log(2, params)
+				this.addJob(this.formValidate).then((res) => {
 					this.$Message.success('新增成功')
 				})
 			},
