@@ -34,5 +34,12 @@ const routers = [
 		},
 		component: (resolve) => require(['./views/jobs/addjobs.vue'], resolve)
 	},
+	{
+		path: '/perfectinfo',
+		meta: {
+			title: '完善信息',
+		},
+		component: (resolve) => require(['./views/perfectinfo/index.vue'], resolve)
+	},
 ];
 export default routers;

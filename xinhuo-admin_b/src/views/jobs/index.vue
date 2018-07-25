@@ -32,7 +32,7 @@
 			<Table :columns="tableColumns" :data="tableData"></Table>
 		</div>
 		<div class="m-t-10">
-			<Page :total="1000" class="r"></Page>
+			<Page :total="1000" class="r" @on-change="pageOnChange"></Page>
 		</div>
 	</div>
 </template>
@@ -40,7 +40,7 @@
 	import _ from 'lodash'
 	import FnMixins from '../../assets/js/fn-mixins'
 	import ApiMixin from '../../assets/js/apis-mixins'
-	import expandRow from './table-expand.vue';
+	import expandRow from '../../components/common/table-expand.vue';
 
 	export default {
 		components: {expandRow},
@@ -64,11 +64,11 @@
 					],
 				},
 				tableColumns: [
-					{
-						type: 'selection',
-						width: 60,
-						align: 'center',
-					},
+//					{
+//						type: 'selection',
+//						width: 60,
+//						align: 'center',
+//					},
 //					{
 //						type: 'expand',
 //						width: 50,
@@ -113,20 +113,20 @@
 						title: '操作',
 						render: (h, params) => {
 							return h('div', [
-								h('Button', {
-									props: {
-										type: 'primary',
-										size: 'small'
-									},
-									style: {
-										marginRight: '5px'
-									},
-									on: {
-										click: () => {
-											this.show(params.row.jobId)
-										}
-									}
-								}, '查看'),
+//								h('Button', {
+//									props: {
+//										type: 'primary',
+//										size: 'small'
+//									},
+//									style: {
+//										marginRight: '5px'
+//									},
+//									on: {
+//										click: () => {
+//											this.show(params.row.jobId)
+//										}
+//									}
+//								}, '查看'),
 								h('Button', {
 									props: {
 										type: 'error',
@@ -190,6 +190,11 @@
 					onCancel: () => {
 					}
 				});
+			},
+			pageOnChange(num) {
+				this.getJobs({}, num).then((res) => {
+					this.tableData = res.data
+				})
 			},
 		},
 		created() {

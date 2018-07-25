@@ -83,6 +83,38 @@ const ApiMixin = {
 			}
 		})
 	},
+	updateMember(params) {
+		return new Promise((resolve, reject) => {
+			try {
+				axios.post(`${DOMAIN}/xinhuo/member/update`, params).then((res) => {
+					if (res) {
+						resolve(res.data)
+					} else {
+						reject(res)
+					}
+				})
+			} catch (err) {
+				this.handleCatchError(err)
+				reject(err)
+			}
+		})
+	},
+	getUserInfo(id) {
+		return new Promise((resolve, reject) => {
+			try {
+				axios.post(`${DOMAIN}/xinhuo/member/query?pagenum=1&rownum=1`, {uid: id}).then((res) => {
+					if (res) {
+						resolve(res.data)
+					} else {
+						reject(res)
+					}
+				})
+			} catch (err) {
+				this.handleCatchError(err)
+				reject(err)
+			}
+		})
+	},
 }
 
 export default {

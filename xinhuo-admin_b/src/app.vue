@@ -38,9 +38,11 @@
 						<Submenu name="5">
 							<template slot="title">
 								<Icon type="person"></Icon>
+								{{userInfo.uname || userInfo.utel}}
 							</template>
 							<MenuItem name="5-1">个人中心</MenuItem>
-							<MenuItem name="5-2">退出登录</MenuItem>
+							<MenuItem name="5-2" @click.native="goToLink('/perfectinfo')">完善信息</MenuItem>
+							<MenuItem name="5-3" @click.native="logout">退出登录</MenuItem>
 						</Submenu>
 					</Menu>
 				</div>
@@ -79,6 +81,15 @@
 			menuActiveName() {
 				const path = this.$route.path.split('/')
 				return path[1]
+			},
+			userInfo() {
+				return JSON.parse(localStorage.getItem('userinfo'))
+			},
+		},
+		methods: {
+			logout() {
+				localStorage.clear()
+				location.href = `${location.origin}/login.html`
 			}
 		},
 		mounted() {
@@ -87,7 +98,6 @@
 		beforeDestroy() {
 
 		},
-		methods: {},
 		mixins: [FnMixins],
 	}
 </script>

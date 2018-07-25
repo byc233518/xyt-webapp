@@ -2,6 +2,7 @@ import Vue from 'vue';
 import iView from 'iview';
 import VueRouter from 'vue-router';
 import _ from 'lodash'
+import axios from 'axios'
 import moment from 'moment'
 import Routers from './router';
 import Util from './libs/util';
@@ -13,7 +14,20 @@ Vue.use(VueRouter);
 Vue.use(iView);
 
 // Object.defineproperty(Vue.prototype, '$moment', { value: moment });
+moment.locale('zh-cn')
 Vue.prototype.$moment = moment;
+
+// axios.post('http://39.108.77.185:8081/xinhuo/member/isLogin', {}).then((res) => {
+//     if (res.data.__statusCode === "1") {
+//         Vue.prototype.$user = res.data.data
+//     } else {
+//         location.href = 'http://localhost:8080/login.html'
+//     }
+// })
+
+if(!localStorage.getItem('userinfo')) {
+  location.href = `${location.origin}/login.html`
+}
 
 // 路由配置
 const RouterConfig = {

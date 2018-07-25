@@ -52,6 +52,14 @@
 				});
 			}
 		},
+		computed: {
+			userInfo() {
+				return JSON.parse(localStorage.getItem('userinfo'))
+			},
+		},
+		created() {
+			console.log(2222222222, this.userInfo)
+		},
 		mixins: [FnMixins],
 	}
 </script>
