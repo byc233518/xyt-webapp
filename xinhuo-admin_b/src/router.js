@@ -21,6 +21,20 @@ const routers = [
 		component: (resolve) => require(['./views/searchresume/index.vue'], resolve)
 	},
 	{
+		path: '/tempresume',
+		meta: {
+			title: '暂存简历',
+		},
+		component: (resolve) => require(['./views/searchresume/tempresume.vue'], resolve)
+	},
+	{
+		path: '/resumedetail/:id',
+		meta: {
+			title: '简历详情',
+		},
+		component: (resolve) => require(['./views/searchresume/resumedetail.vue'], resolve)
+	},
+	{
 		path: '/jobs',
 		meta: {
 			title: '职位列表'

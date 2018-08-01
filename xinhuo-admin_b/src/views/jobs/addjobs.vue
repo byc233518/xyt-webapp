@@ -7,7 +7,7 @@
 				<Row class="m-t-20">
 					<Col span="12">
 					<Form-item prop="company" label="公司名称">
-						<Input type="text" placeholder="" disabled></Input>
+						<Input type="text" placeholder="" disabled v-model="formValidate.company"></Input>
 					</Form-item>
 					</Col>
 					<Col span="12">
@@ -142,6 +142,11 @@
 				},
 			}
 		},
+		computed: {
+			userInfo() {
+				return JSON.parse(localStorage.getItem('userinfo'))
+			},
+		},
 		methods: {
 			save() {
 				console.log(1, this.formValidate)
@@ -162,8 +167,23 @@
 			},
 		},
 		created() {
-			this.getJobs({}).then((res) => {
-				this.tableData = res.data
+			const self = this
+			this.getUserInfo(this.userInfo.uid).then((res) => {
+				console.log(res.data)
+				if (res.data[0].company) {
+					this.formValidate.company = res.data[0].company
+				} else {
+					this.$Modal.confirm({
+						title: '请先完善个人及公司信息',
+						content: '<p>帮你跳转到完善信息页面?</p>',
+						onOk: () => {
+							self.$router.push('/perfectinfo')
+						},
+						onCancel: () => {
+							self.$router.push('/')
+						},
+					})
+				}
 			})
 		},
 		mixins: [FnMixins, ApiMixin],

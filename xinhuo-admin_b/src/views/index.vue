@@ -9,7 +9,7 @@
 				<p> 置顶数: 12</p>
 				<p> 职位数: 12</p>
 				<div class="m-t-20">
-					<Button type="warning" class="">职位管理</Button>
+					<Button type="warning" class="" @click.native="goToLink('/jobs')">职位管理</Button>
 				</div>
 			</div>
 			</Col>
@@ -58,7 +58,6 @@
 			},
 		},
 		created() {
-			console.log(2222222222, this.userInfo)
 		},
 		mixins: [FnMixins],
 	}

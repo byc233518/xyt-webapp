@@ -8,7 +8,7 @@
 		<Row>
 			<Col span="4">
 				<div>
-					<img :src="row.img" alt="" style="width: 100px; height: 100px;"/>
+					<img :src="row.uimageId" alt="" style="width: 100px; height: 100px;"/>
 				</div>
 			</Col>
 			<Col span="20" class="tl">
@@ -31,10 +31,6 @@
 			<div class="expand-row">
 				<span class="expand-key">联系电话: </span>
 				<span class="expand-value">{{ row.memberutel }}</span>
-			</div>
-			<div class="expand-row">
-				<span class="expand-key">身高: </span>
-				<span class="expand-value">{{ row.memberheight }}</span>
 			</div>
 			<div class="expand-row">
 				<span class="expand-key">身高: </span>

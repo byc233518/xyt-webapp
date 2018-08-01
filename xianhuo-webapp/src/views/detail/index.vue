@@ -1,29 +1,9 @@
 <template>
   <div>
-    <!--eslint-disable-->
-    <!--<div class="content p-20">-->
-    <!--<h2>{{jobData.title}}</h2>-->
-    <!--<div class="salary">{{jobData.salary}} | 月结</div>-->
-    <!--<div class="m-t-10">更新时间: {{jobData.date}}</div>-->
-    <!--<div class="m-t-10">城市: {{jobData.city}}</div>-->
-    <!--<div class="m-t-10">工作地点: {{jobData.address}}</div>-->
-    <!--<div class="m-t-10">联系电话: <a :href="jobData.tel"></a>{{jobData.tel}}</div>-->
-    <!--<Divider>详细信息</Divider>-->
-    <!--<div class="fz-35 border-bottom m-t-20">职位描述</div>-->
-    <!--<p class="m-t-20">{{jobData.desc}}</p>-->
-    <!--<div class="fz-35 border-bottom m-t-20">公司信息</div>-->
-    <!--<p class="m-t-20">{{companyData.name}}</p>-->
-    <!--<p class="m-t-20">公司规模: {{companyData.scale}}</p>-->
-    <!--<p class="m-t-20">公司性质: {{companyData.nature}}</p>-->
-    <!--<p class="m-t-20">是否认证: {{companyData.is_auth ? '已认证' : '未认证'}}</p>-->
-    <!--<p class="m-t-20">所属行业: {{companyData.industry}}</p>-->
-    <!--<p class="m-t-20">公司介绍: </p>-->
-    <!--<p class="m-t-20">{{companyData.desc}}</p>-->
-    <!--</div>-->
     <div class="job-detail">
       <section class="base-info">
         <div class="flexbox baseinfo-top">
-          <span class="flex-1 job-name">{{jobData.title}}</span>
+          <span class="flex-1 job-name">{{jobData.jobName}}</span>
           <p class="salary">{{jobData.salary}}</p>
         </div>
         <p class="feedback-labels clearfix">
@@ -31,47 +11,50 @@
           <label data-selector="feedback">24小时反馈</label>
         </p>
         <div class="job-conditon">
-          <p>地区: <a>{{jobData.city}}</a></p>
+          <p>地区: <a>{{jobData.city || '未知地区'}}</a></p>
           <p>发布时间: {{jobData.date}}</p>
+          <p>学历要求: {{jobData.date}}</p>
+          <p>经验要求: {{jobData.workTime}}</p>
         </div>
         <!-- 福利标签 -->
-        <a :href="['tel:' + jobData.tel]"  class="btn-apply-job" data-selector="apply">立即联系</a>
+        <a :href="['tel:' + jobData.tel]" class="btn-apply-job" data-selector="apply">立即联系</a>
       </section>
 
       <section class="company-info">
         <div class="job-parent clearfix" data-selector="card-link">
           <a href="#" class="job-img">
             <img
-            :src=jobData.thumbnail class="tinyLogo"></a>
+              :src=jobData.thumbnail class="tinyLogo"></a>
           <div class="job-parent-info">
             <h2 class="ellipsis-1">
               {{jobData.company_name}}
             </h2>
-            <p>{{jobData.address}}</p>
+            <p>{{jobData.workLocation}}</p>
             <!--<p class="muted ellipsis-1">-->
-              <!--<a href="https://m.liepin.com/ruanjian/" class="industry-link"-->
-                 <!--data-selector="return-url">{{companyData.industry}}</a>-->
-              <!--&nbsp;&nbsp;{{companyData.scale}}</p>-->
+            <!--<a href="https://m.liepin.com/ruanjian/" class="industry-link"-->
+            <!--data-selector="return-url">{{companyData.industry}}</a>-->
+            <!--&nbsp;&nbsp;{{companyData.scale}}</p>-->
           </div>
           <!--<i class="text-icon icon-go-ahead"></i>-->
         </div>
 
-        <!--<p class="company-address" data-selector="look-map" @click="toggleMap">{{jobData.address}}<span-->
-          <!--data-selector="tips-text">查看地图</span><i class="text-icon icon-address"></i></p>-->
+        <!--<p class="company-address" data-selector="look-map"
+         @click="toggleMap">{{jobData.address}}<span-->
+        <!--data-selector="tips-text">查看地图</span><i class="text-icon icon-address"></i></p>-->
         <!--<div v-show="showMap">-->
-          <!--<baidu-map class="map"-->
-                     <!--:center="center"-->
-                     <!--:zoom="zoom"-->
-                     <!--@ready="mapReady"-->
-          <!--&gt;-->
-            <!--<bm-marker-->
-              <!--:position="'深圳市南山区高新南一道8号创维大厦'"-->
-              <!--:dragging="true"-->
-              <!--animation="BMAP_ANIMATION_BOUNCE"-->
-            <!--&gt;-->
-            <!--</bm-marker>-->
-            <!--<bm-navigation anchor="BMAP_ANCHOR_BOTTOM_RIGHT"></bm-navigation>-->
-          <!--</baidu-map>-->
+        <!--<baidu-map class="map"-->
+        <!--:center="center"-->
+        <!--:zoom="zoom"-->
+        <!--@ready="mapReady"-->
+        <!--&gt;-->
+        <!--<bm-marker-->
+        <!--:position="'深圳市南山区高新南一道8号创维大厦'"-->
+        <!--:dragging="true"-->
+        <!--animation="BMAP_ANIMATION_BOUNCE"-->
+        <!--&gt;-->
+        <!--</bm-marker>-->
+        <!--<bm-navigation anchor="BMAP_ANCHOR_BOTTOM_RIGHT"></bm-navigation>-->
+        <!--</baidu-map>-->
         <!--</div>-->
 
       </section>
@@ -79,7 +62,7 @@
         <h3 class="h3-title">职位描述</h3>
         <div class="about-us-main" data-selector="about-us-main">
           <article class="content-word">
-            {{jobData.desc}}
+            {{jobData.jobDesc}}
             <br>
           </article>
         </div>
@@ -111,16 +94,21 @@
         },
         zoom: 15,
         jobData: {
-          num: 0,
-          tel: '',
-          city: '',
-          desc: '',
-          date: '',
-          title: '',
-          salary: '',
-          address: '',
-          province: '',
-          requirement: '',
+          createBy: null,
+          createDate: 1531210298000,
+          updateBy: null,
+          updateDate: 1531210298000,
+          jobId: 34,
+          jobName: '',
+          degree: '',
+          workTime: '',
+          workLocation: '',
+          hireNumber: 4,
+          salary: 10000.0,
+          jobDesc: '',
+          effectState: null,
+          effectiveDate: null,
+          expiryDate: 1531152000000,
         },
         companyData: {
           desc: '',
@@ -128,7 +116,10 @@
       }
     },
     methods: {
-      mapReady({ BMap, map }) {
+      mapReady({
+                 BMap,
+                 map,
+               }) {
         console.log(BMap, map)
         this.center = this.jobData.city
         this.zoom = 10
@@ -138,16 +129,19 @@
       },
     },
     created() {
-      this.getDetailById(this.$route.params.id).then((res) => {
+      this.getList(
+        {
+          jobId: this.$route.params.id,
+        }, 1, 1).then((res) => {
         this.$vux.loading.hide()
         if (res) {
-          this.jobData = res
-          this.jobData.date = moment(this.jobData.date).format('YYYY-MM-DD')
+          this.jobData = res.data[0]
+          this.jobData.date = moment(this.jobData.updateDate).format('YYYY-MM-DD')
 
-          this.getCompanyByName(res.company_name).then((companyRes) => {
-            this.$vux.loading.hide()
-            this.companyData = companyRes
-          })
+//          this.getCompanyByName(res.company_name).then((companyRes) => {
+//            this.$vux.loading.hide()
+//            this.companyData = companyRes
+//          })
         }
       })
     },

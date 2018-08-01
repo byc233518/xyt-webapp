@@ -115,6 +115,54 @@ const ApiMixin = {
 			}
 		})
 	},
+	queryTempResume(mid, pagenum = 1, rownum = 10) {
+		return new Promise((resolve, reject) => {
+			try {
+				axios.post(`${DOMAIN}/xinhuo/temporary/query?pagenum=${pagenum}&rownum=${rownum}&mid=${mid}`).then((res) => {
+					if (res) {
+						resolve(res.data)
+					} else {
+						reject(res)
+					}
+				})
+			} catch (err) {
+				this.handleCatchError(err)
+				reject(err)
+			}
+		})
+	},
+	tempResume(uid, id) {
+		return new Promise((resolve, reject) => {
+			try {
+				axios.post(`${DOMAIN}/xinhuo/temporary/insert?mid=${uid}&rid=${id}`).then((res) => {
+					if (res) {
+						resolve(res.data)
+					} else {
+						reject(res)
+					}
+				})
+			} catch (err) {
+				this.handleCatchError(err)
+				reject(err)
+			}
+		})
+	},
+	removeResumeFromTemp(id) {
+		return new Promise((resolve, reject) => {
+			try {
+				axios.post(`${DOMAIN}/xinhuo/temporary/delete?id=${id}`).then((res) => {
+					if (res) {
+						resolve(res.data)
+					} else {
+						reject(res)
+					}
+				})
+			} catch (err) {
+				this.handleCatchError(err)
+				reject(err)
+			}
+		})
+	},
 }
 
 export default {

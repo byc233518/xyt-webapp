@@ -1,7 +1,8 @@
-import axois from 'axios'
+import axios from 'axios'
 
 const isDebug = false
 const domain = isDebug ? 'http://localhost:8360' : 'http://wx.ngrok.xetong.cn'
+const NEWDOMAIN = 'http://39.108.77.185:8081/xinhuo'
 const apiMixins = {
   handleReqError(req) {
     this.$vux.loading.hide()
@@ -16,13 +17,13 @@ const apiMixins = {
     // && err.response.statusText ? err.response.statusText : '未知错误'}`)
     return false
   },
-  async getList() {
+  async getList(params = {}, pagenum = 1, rownum = 20) {
     this.$vux.loading.show({
       text: '数据加载中...',
     })
     try {
       // this.handleReqError(req)
-      const res = await axois.get(`${domain}/list`)
+      const res = await axios.post(`${NEWDOMAIN}/job/query?pagenum=${pagenum}&rownum=${rownum}`, params)
       return res.data
     } catch (err) {
       // this.handleCatchError(err)
@@ -36,7 +37,7 @@ const apiMixins = {
     })
     try {
       // this.handleReqError(req)
-      const res = await axois.post(`${domain}/list-with-params`, params)
+      const res = await axios.post(`${domain}/list-with-params`, params)
       return res.data
     } catch (err) {
       // this.handleCatchError(err)
@@ -49,7 +50,7 @@ const apiMixins = {
     })
     try {
       // this.handleReqError(req)
-      const res = await axois.get(`${domain}/list/${id}`)
+      const res = await axios.get(`${domain}/list/${id}`)
       return res.data
     } catch (err) {
       // this.handleCatchError(err)
@@ -62,7 +63,7 @@ const apiMixins = {
     // })
     try {
       // this.handleReqError(req)
-      const res = await axois.get(`${domain}/company`)
+      const res = await axios.get(`${domain}/company`)
       return res.data
     } catch (err) {
       // this.handleCatchError(err)
@@ -75,7 +76,7 @@ const apiMixins = {
     })
     try {
       // this.handleReqError(req)
-      const res = await axois.get(`${domain}/company/${name}`)
+      const res = await axios.get(`${domain}/company/${name}`)
       return res.data
     } catch (err) {
       // this.handleCatchError(err)
@@ -88,7 +89,7 @@ const apiMixins = {
     })
     try {
       // this.handleReqError(req)
-      const res = await axois.get(`http://api.map.baidu.com/geocoder/v2/?ak=KMVMX2ByWjGDolZ1M8SYTmHQ&output=json&address=${address}&city=${city}`)
+      const res = await axios.get(`http://api.map.baidu.com/geocoder/v2/?ak=KMVMX2ByWjGDolZ1M8SYTmHQ&output=json&address=${address}&city=${city}`)
       return res.data
     } catch (err) {
       // this.handleCatchError(err)
@@ -101,7 +102,7 @@ const apiMixins = {
     })
     try {
       // this.handleReqError(req)
-      const res = await axois.post(`${domain}/list/`, params)
+      const res = await axios.post(`${domain}/list/`, params)
       return res.data
     } catch (err) {
       // this.handleCatchError(err)
@@ -114,7 +115,7 @@ const apiMixins = {
     })
     try {
       // this.handleReqError(req)
-      const res = await axois.post(`${domain}/company/`, params)
+      const res = await axios.post(`${domain}/company/`, params)
       return res.data
     } catch (err) {
       // this.handleCatchError(err)
@@ -127,7 +128,7 @@ const apiMixins = {
     })
     try {
       // this.handleReqError(req)
-      const res = await axois.delete(`${domain}/list/${id}`)
+      const res = await axios.delete(`${domain}/list/${id}`)
       return res.data
     } catch (err) {
       // this.handleCatchError(err)
@@ -137,7 +138,7 @@ const apiMixins = {
   async getWxUserDetail(params) {
     try {
       // this.handleReqError(req)
-      const res = await axois.post(`${domain}/getWxUserInfo/`, params)
+      const res = await axios.post(`${domain}/getWxUserInfo/`, params)
       return res.data
     } catch (err) {
       // this.handleCatchError(err)
@@ -147,7 +148,7 @@ const apiMixins = {
   async getUserByOpenid(openid) {
     try {
       // this.handleReqError(req)
-      const res = await axois.get(`${domain}/user/${openid}`)
+      const res = await axios.get(`${domain}/user/${openid}`)
       return res.data
     } catch (err) {
       // this.handleCatchError(err)
@@ -156,7 +157,7 @@ const apiMixins = {
   },
   async saveFeedBack(params) {
     try {
-      const res = await axois.post(`${domain}/feedback/`, params)
+      const res = await axios.post(`${domain}/feedback/`, params)
       console.log(res)
       return res.data
     } catch (err) {
@@ -166,7 +167,7 @@ const apiMixins = {
   },
   async saveJobRequest(params) {
     try {
-      const res = await axois.post(`${domain}/savejobrequest/`, params)
+      const res = await axios.post(`${domain}/savejobrequest/`, params)
       console.log(res)
       return res.data
     } catch (err) {
@@ -176,7 +177,7 @@ const apiMixins = {
   },
   async getSkills(params) {
     try {
-      const res = await axois.post(`${domain}/skills/`, params)
+      const res = await axios.post(`${domain}/skills/`, params)
       console.log(res)
       return res.data
     } catch (err) {
@@ -186,7 +187,7 @@ const apiMixins = {
   },
   async saveUserInfo(params) {
     try {
-      const res = await axois.post(`${domain}/saveuserinfo/`, params)
+      const res = await axios.post(`${domain}/saveuserinfo/`, params)
       console.log(res)
       return res.data
     } catch (err) {

@@ -19,28 +19,28 @@
 							<MenuItem name="jobs" @click.native="goToLink('/jobs')">职位管理</MenuItem>
 							<MenuItem name="addjobs" @click.native="goToLink('/addjobs')">新增职位</MenuItem>
 						</Submenu>
-						<Submenu name="3">
-							<template slot="title">
-								<Icon type="email"></Icon>
-								应聘管理
-							</template>
-							<MenuItem name="mailbox">收件箱</MenuItem>
-							<MenuItem name="talentpool">公司人才库</MenuItem>
-						</Submenu>
+						<!--<Submenu name="3">-->
+							<!--<template slot="title">-->
+								<!--<Icon type="email"></Icon>-->
+								<!--应聘管理-->
+							<!--</template>-->
+							<!--<MenuItem name="mailbox">收件箱</MenuItem>-->
+							<!--<MenuItem name="talentpool">公司人才库</MenuItem>-->
+						<!--</Submenu>-->
 						<Submenu name="">
 							<template slot="title">
 								<Icon type="search"></Icon>
 								简历搜索
 							</template>
 							<MenuItem name="searchresume" @click.native="goToLink('/searchresume')">搜索简历</MenuItem>
-							<MenuItem name="tempfolder">暂存文件夹</MenuItem>
+							<MenuItem name="tempfolder" @click.native="goToLink('/tempresume')">暂存文件夹</MenuItem>
 						</Submenu>
 						<Submenu name="5">
 							<template slot="title">
 								<Icon type="person"></Icon>
 								{{userInfo.uname || userInfo.utel}}
 							</template>
-							<MenuItem name="5-1">个人中心</MenuItem>
+							<!--<MenuItem name="5-1">个人中心</MenuItem>-->
 							<MenuItem name="5-2" @click.native="goToLink('/perfectinfo')">完善信息</MenuItem>
 							<MenuItem name="5-3" @click.native="logout">退出登录</MenuItem>
 						</Submenu>
@@ -51,22 +51,11 @@
 		<div id="container">
 			<router-view></router-view>
 		</div>
-		<footer class="m-t-10">
-			<Row>
-				<Col span="8">
-				<Icon type="chatboxes"></Icon>
-				简介
-				<ul>
-					<li><a href="">信活简介</a></li>
-					<li><a href="">产品服务</a></li>
-					<li><a href="">联系我们</a></li>
-				</ul>
-				</Col>
-				<Col span="8">
-				</Col>
-				<Col span="8">
-				</Col>
-			</Row>
+		<footer class="m-t-10 tc">
+			<p>信活工作网版权所有 ©2018</p>
+			<p class="note">
+				<a class="gan" target="_blank" href="#">粤ICP备17144670号-1</a>
+			</p>
 		</footer>
 	</div>
 </template>
@@ -137,7 +126,7 @@
 	}
 
 	footer {
-		padding: 10px 200px 30px;
+		padding: 10px 20px 10px;
 		background: #fff;
 
 		li {
@@ -145,6 +134,15 @@
 			margin-left: 15px;
 			font-size: 12px;
 		}
+	}
+
+	.gan {
+		display: inline-block;
+		height: 20px;
+		line-height: 20px;
+		color: #999;
+		padding-left: 25px;
+		background: url(//img01.51jobcdn.com/im/2016/license/gongan.png) no-repeat;
 	}
 
 </style>

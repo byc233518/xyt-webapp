@@ -3,7 +3,7 @@
     <group :title="''">
       <cell :title="userInfo.nickname" is-link :link="'/userinfo'">
         <img slot="icon" width="60" style="display:block;margin-right:5px;"
-             :src="userInfo.headimgurl" />
+             :src="userInfo.headimgurl"/>
       </cell>
     </group>
     <group>
@@ -35,8 +35,7 @@
         return this.urlParamToObj().code || null
       },
     },
-    methods: {
-    },
+    methods: {},
     created() {
       const self = this
       this.$vlf.getItem('wxUserInfo').then((res) => {

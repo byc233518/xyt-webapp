@@ -46,7 +46,9 @@
 													style="width: 200px"></DatePicker>
 						</Form-item>
 						<Form-item prop="height" label="身高">
-							<Input type="text" placeholder="请填写" v-model="formValidate.height"></Input>
+							<Input type="text" placeholder="请填写" v-model="formValidate.height">
+								<span slot="append">cm</span>
+							</Input>
 						</Form-item>
 
 					</Card>
@@ -74,10 +76,27 @@
 						<Input type="text" placeholder="请填写" v-model="formValidate.businessLicense"></Input>
 					</Form-item>
 					<Form-item prop="companyProperty" label="公司性质">
-						<Input type="text" placeholder="请填写" v-model="formValidate.companyProperty"></Input>
+						<Select v-model="formValidate.companyProperty">
+							<Option value="有限责任公司" key="有限责任公司">有限责任公司</Option>
+							<Option value="股份有限公司" key="股份有限公司">股份有限公司</Option>
+							<Option value="国有独资公司" key="国有独资公司">国有独资公司</Option>
+							<Option value="个人独资企业" key="个人独资企业">个人独资企业</Option>
+							<Option value="合伙企业" key="合伙企业">合伙企业</Option>
+							<Option value="个体工商户" key="个体工商户">个体工商户</Option>
+							<Option value="外商投资企业" key="外商投资企业">外商投资企业</Option>
+							<Option value="私营企业" key="私营企业">私营企业</Option>
+						</Select>
 					</Form-item>
 					<Form-item prop="scale" label="人员规模">
-						<Input type="text" placeholder="请填写" v-model="formValidate.scale"></Input>
+						<Select v-model="formValidate.scale">
+							<Option value="0-20人" key="0-20人">0-20人</Option>
+							<Option value="20-200人" key="20-200人">20-200人</Option>
+							<Option value="200-500人" key="200-500人">200-500人</Option>
+							<Option value="500-1000人" key="500-1000人">500-1000人</Option>
+							<Option value="1000-5000人" key="1000-5000人">1000-5000人</Option>
+							<Option value="5000-20000人" key="5000-20000人">5000-20000人</Option>
+							<Option value="20000人以上" key="20000人以上">20000人以上</Option>
+							</Select>
 					</Form-item>
 					<Button type="primary" @click="next(1)">上一步</Button>
 					<Button type="primary" @click="next(3)">下一步</Button>
@@ -236,9 +255,10 @@
 				this.current = index
 			},
 			save() {
+				const params = delete this.formValidate.password
 				this.updateMember(this.formValidate).then((res) => {
-					debugger
 					if(res.__statusCode === '1') {
+						localStorage.setItem('userinfo', JSON.stringify(this.formValidate))
 						this.$Message.success('修改成功')
 						this.next(0)
 					} else {

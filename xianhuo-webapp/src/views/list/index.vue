@@ -66,7 +66,7 @@
 
     <div class="job-card-wrap">
       <div v-if="pageData && pageData.length" class="job-card" v-for="(item, key) in pageData"
-           @click="linkTo(`detail/${item._id}`)">
+           @click="linkTo(`detail/${item.jobId}`)">
         <dl class="clearfix">
           <dt class="job-card-logo">
             <img :src=item.thumbnail alt=""
@@ -76,16 +76,17 @@
             <ul>
               <li class="flexbox">
                 <a class="flex-2 job-name">
-                  <span class="name-text">{{item.title}}   </span>
+                  <span class="name-text">{{item.jobName}}   </span>
                 </a>
                 <span class="text-warning flex-1">{{item.salary}}</span>
               </li>
               <li>
-                <a class="ellipsis-1 company-name" onclick="return false;">{{item.company_name}}</a>
+                <a class="ellipsis-1 company-name" onclick="return false;">{{item.company}}</a>
               </li>
               <li>
-                <time>{{dateFormat(item.date, 'YYYY-MM-DD')}}</time>
+                <time>{{dateFormat(item.updateDate, 'YYYY-MM-DD')}}</time>
                 <a onclick="return false;">{{item.city}}</a>
+                <p>{{item.workLocation}}</p>
               </li>
             </ul>
           </dd>
@@ -193,10 +194,11 @@
       /* eslint-disable */
 //      this.city = '不限'
       this.getList().then((res) => {
+        console.log(res.data)
         this.$vux.loading.hide()
         if (res) {
-          this.pageData = res
-          this.originList = res
+          this.pageData = res.data
+          this.originList = res.data
         } else {
           this.pageData = []
           this.originList = []
