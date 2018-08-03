@@ -11,9 +11,26 @@
 			</Steps>
 			<Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="120" class="m-t-50">
 				<div v-if="current === 0">
-
 					<Card :bordered="false" class="m-b-15 m-t-20">
 						基本信息
+						<Form-item prop="uimageFile" label="照片">
+							<Upload
+								action="http://39.108.77.185:8081/xinhuo/file/upload?application=picture"
+								:on-success="uploadFileSuccess"
+								:show-upload-list="false"
+								:format="['jpg','jpeg','png']"
+								:max-size="2048"
+							>
+								<div>
+									<div v-if="formValidate.uimageFile === ''"
+											 style="width: 58px;height:58px;line-height: 58px;text-align: center;border-radius: 5px;border: 1px #d0cfcf dotted;">
+										<Icon type="camera" size="20"></Icon>
+									</div>
+									<img v-else :src="'http://39.108.77.185:8081/xinhuo/' + formValidate.uimageFile"
+											 icon="ios-cloud-upload-outline" style="max-width: 60px;">
+								</div>
+							</Upload>
+						</Form-item>
 						<Form-item prop="uname" label="姓 名">
 							<Input type="text" placeholder="请填写" v-model="formValidate.uname"></Input>
 						</Form-item>
@@ -47,7 +64,7 @@
 						</Form-item>
 						<Form-item prop="height" label="身高">
 							<Input type="text" placeholder="请填写" v-model="formValidate.height">
-								<span slot="append">cm</span>
+							<span slot="append">cm</span>
 							</Input>
 						</Form-item>
 
@@ -96,7 +113,7 @@
 							<Option value="1000-5000人" key="1000-5000人">1000-5000人</Option>
 							<Option value="5000-20000人" key="5000-20000人">5000-20000人</Option>
 							<Option value="20000人以上" key="20000人以上">20000人以上</Option>
-							</Select>
+						</Select>
 					</Form-item>
 					<Button type="primary" @click="next(1)">上一步</Button>
 					<Button type="primary" @click="next(3)">下一步</Button>
@@ -135,25 +152,26 @@
 		data() {
 			return {
 				formValidate: {
-					addr: "深圳市",
-					birthday: "1990-04-22",
-					businessLicense: "111CCCC444",
-					company: "信活科技有限公司",
+					addr: "",
+					birthday: null,
+					businessLicense: "",
+					company: "",
 					companyProfile: "",
-					companyProperty: "020",
-					companyType: "民营",
-					email: "zhangsan@163.com",
-					height: 170,
-					idCard: "42122221990042234455",
-					maritalStatus: "否",
-					password: "123456",
-					positionName: "HR",
-					scale: "0-20人",
+					companyProperty: "",
+					companyType: "",
+					email: "",
+					height: 0,
+					idCard: "",
+					maritalStatus: "",
+					password: "",
+					positionName: "",
+					scale: "",
 					uid: 0,
-					uimageId: 1,
-					uname: "张三",
-					usex: "男",
-					utel: "13900001111",
+					uimageId: null,
+					uimageFile: null,
+					uname: "",
+					usex: "",
+					utel: "",
 					utype: 1,
 					updateBy: this.userInfo && this.userInfo.uid,
 				},
@@ -218,7 +236,7 @@
 				const that = this
 				let params = {}
 				_.forEach(this.formValidate, (val, key) => {
-					if(!_.isEmpty(val)) {
+					if (!_.isEmpty(val)) {
 						params[key] = val
 					}
 				})
@@ -255,9 +273,10 @@
 				this.current = index
 			},
 			save() {
+				this.formValidate.updateBy = this.userInfo && this.userInfo.uid
 				const params = delete this.formValidate.password
 				this.updateMember(this.formValidate).then((res) => {
-					if(res.__statusCode === '1') {
+					if (res.__statusCode === '1') {
 						localStorage.setItem('userinfo', JSON.stringify(this.formValidate))
 						this.$Message.success('修改成功')
 						this.next(0)
@@ -265,6 +284,10 @@
 						this.$Message.error(`${res.__errorMessage}`)
 					}
 				})
+			},
+			uploadFileSuccess(res, file) {
+				this.formValidate.uimageId = res.data.fileId
+				this.formValidate.uimageFile = `${res.data.application}/${res.data.fileName}`
 			},
 		},
 		created() {

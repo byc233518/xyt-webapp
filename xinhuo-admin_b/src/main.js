@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import iView from 'iview';
 import VueRouter from 'vue-router';
-import _ from 'lodash'
+import lds from 'lodash'
 import axios from 'axios'
 import moment from 'moment'
 import Routers from './router';
@@ -16,6 +16,7 @@ Vue.use(iView);
 // Object.defineproperty(Vue.prototype, '$moment', { value: moment });
 moment.locale('zh-cn')
 Vue.prototype.$moment = moment;
+Vue.prototype.$lds = lds;
 
 // axios.post('http://39.108.77.185:8081/xinhuo/member/isLogin', {}).then((res) => {
 //     if (res.data.__statusCode === "1") {
