@@ -3,7 +3,7 @@
 		<div class="wrapper-header">
 			<header class="wrapper-header-nav">
 				<a href="/" id="logo">
-					信活
+
 				</a>
 				<div class="wrapper-header-nav-list">
 					<Menu mode="horizontal" :theme="'light'" :active-name="menuActiveName">
@@ -17,7 +17,7 @@
 								职位发布
 							</template>
 							<MenuItem name="jobs" @click.native="goToLink('/jobs')">职位管理</MenuItem>
-							<MenuItem name="addjobs" @click.native="goToLink('/addjobs')">新增职位</MenuItem>
+							<MenuItem name="addjobs" @click.native="goToLink('/addjob')">新增职位</MenuItem>
 						</Submenu>
 						<!--<Submenu name="3">-->
 							<!--<template slot="title">-->
@@ -123,6 +123,11 @@
 		display: inline-block;
 		height: 60px;
 		line-height: 60px;
+		background-image: url("./images/logo.png");
+		background-size: 100%;
+		background-position: center;
+		background-repeat: no-repeat;
+		width: 70px;
 	}
 
 	footer {

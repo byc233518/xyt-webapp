@@ -4,6 +4,7 @@
 			<div class="logo"></div>
 		</header>
 
+		<Button class="m-b-10" @click.native="goToLink('/searchresume')"> << 返回</Button>
 		<section>
 			<Row>
 				<Col span="8">张三</Col>

@@ -137,9 +137,9 @@
     created() {
       this.$vlf.getItem('wxUserInfo').then((res) => {
         this.getUserByOpenid(res.openid).then((userinfo) => {
-          this.userInfo = _.assign({}, this.userInfo, userinfo[0])
-          this.$vlf.setItem('wxUserInfo', userinfo[0])
-          this.userInfo.realName = userinfo[0].nickname
+          this.userInfo = _.assign({}, this.userInfo, add[0])
+          this.$vlf.setItem('wxUserInfo', add[0])
+          this.userInfo.realName = add[0].nickname
         })
       })
     },

@@ -67,6 +67,22 @@ const ApiMixin = {
 			}
 		})
 	},
+	editJob(params = {}) {
+		return new Promise((resolve, reject) => {
+			try {
+				axios.post(`${DOMAIN}/xinhuo/job/update`, params).then((res) => {
+					if (res) {
+						resolve(res.data)
+					} else {
+						reject(res)
+					}
+				})
+			} catch (err) {
+				this.handleCatchError(err)
+				reject(err)
+			}
+		})
+	},
 	deleteJob(id) {
 		return new Promise((resolve, reject) => {
 			try {

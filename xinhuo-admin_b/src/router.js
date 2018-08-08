@@ -42,11 +42,18 @@ const routers = [
 		component: (resolve) => require(['./views/jobs/index.vue'], resolve)
 	},
 	{
-		path: '/addjobs',
+		path: '/addjob',
 		meta: {
 			title: '新增职位'
 		},
-		component: (resolve) => require(['./views/jobs/addjobs.vue'], resolve)
+		component: (resolve) => require(['./views/jobs/addjob.vue'], resolve)
+	},
+	{
+		path: '/editjob/:id',
+		meta: {
+			title: '新增职位'
+		},
+		component: (resolve) => require(['./views/jobs/editjob.vue'], resolve)
 	},
 	{
 		path: '/perfectinfo',

@@ -113,20 +113,20 @@
 						title: '操作',
 						render: (h, params) => {
 							return h('div', [
-//								h('Button', {
-//									props: {
-//										type: 'primary',
-//										size: 'small'
-//									},
-//									style: {
-//										marginRight: '5px'
-//									},
-//									on: {
-//										click: () => {
-//											this.show(params.row.jobId)
-//										}
-//									}
-//								}, '查看'),
+								h('Button', {
+									props: {
+										type: 'primary',
+										size: 'small'
+									},
+									style: {
+										marginRight: '5px'
+									},
+									on: {
+										click: () => {
+											this.edit(params.row.jobId)
+										}
+									}
+								}, '修改'),
 								h('Button', {
 									props: {
 										type: 'error',
@@ -142,20 +142,7 @@
 						}
 					},
 				],
-				tableData: [
-					{
-						"resumeId": 1,
-						"resumeName": "XXX个人简历",
-						"income": 20000.0,
-						"expectSalary": 30000.0,
-						"expectJobLocation": "佛山",
-						"function": "职能",
-						"vocation": "互联网",
-						"selfEvaluation": "开朗活泼",
-						"dutyDate": 1530374400000,
-						"jobType": "全职",
-					},
-				]
+				tableData: [],
 			}
 		},
 		methods: {
@@ -195,6 +182,9 @@
 				this.getJobs({}, num).then((res) => {
 					this.tableData = res.data
 				})
+			},
+			edit(id) {
+				this.goToLink(`/editjob/${id}`)
 			},
 		},
 		created() {

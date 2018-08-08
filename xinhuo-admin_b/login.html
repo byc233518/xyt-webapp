@@ -24,18 +24,22 @@
 		}
 
 		.title {
-			padding-top: 50px;
+			display: inline-block;
+			margin-top: 50px;
 			font-size: 4vw;
 			text-align: center;
 			color: #00000099;
+			background-color: rgba(255, 255, 255, 0.2)
 		}
 	</style>
 </head>
 <body>
 
 <div id="app">
-	<div class="title">
-		信活企业会员登录
+	<div class="tc">
+		<div class="title">
+			信活企业会员登录
+		</div>
 	</div>
 	<Row>
 		<i-col :xs="{ span: 20, offset: 2 }" :lg="{ span: 9, offset: 15 }" :md="{ span: 12, offset: 10 }">
@@ -67,7 +71,8 @@
 		</i-col>
 		<i-col span="6">&nbsp;</i-col>
 		<Modal v-model="ForgetPasswordModalVisible" title="找回密码">
-			<i-form ref="forgetPassWordForm" :rules="forgetPassWordFormRule" :model="forgetPassWordForm" class="mt-20" :label-width="80">
+			<i-form ref="forgetPassWordForm" :rules="forgetPassWordFormRule" :model="forgetPassWordForm" class="mt-20"
+							:label-width="80">
 				<form-item prop="email" label="邮箱">
 					<Row>
 						<i-col span="18">
@@ -191,9 +196,7 @@
 					passwd: '',
 					passwdCheck: '',
 				},
-				forgetPassWordFormRule: {
-
-				},
+				forgetPassWordFormRule: {},
 			}
 		},
 		methods: {

@@ -1,5 +1,6 @@
 <template>
 	<div class=" p-l-100 p-r-100">
+		<Button class="m-b-10" @click.native="goToLink('/jobs')"> << 返回</Button>
 		<Card :bordered="false" class="m-b-15">
 			<Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">
 				<h4>职位基本信息</h4>
@@ -7,7 +8,7 @@
 				<Row class="m-t-20">
 					<Col span="12">
 					<Form-item prop="company" label="公司名称">
-						<Input type="text" placeholder="" disabled v-model="formValidate.company"></Input>
+						<Input type="text" placeholder="" disabled v-model="userInfo.company"></Input>
 					</Form-item>
 					</Col>
 					<Col span="12">
@@ -64,7 +65,7 @@
 					</Form-item>
 					</Col>
 					<Col span="12">
-					<Form-item prop="degree" label="最高学历">
+					<Form-item prop="degree" label="学历要求">
 						<Select filterable v-model="formValidate.degree">
 							<Option value="高中" key="高中">高中</Option>
 							<Option value="本科" key="本科">本科</Option>
@@ -76,10 +77,10 @@
 					<Col span="12">
 					<Form-item prop="salary" label="薪资范围">
 						<Select filterable v-model="formValidate.salary">
-							<Option value="10000" key="10000">10000</Option>
-							<Option value="20000" key="20000">20000</Option>
-							<Option value="30000" key="30000">30000</Option>
-							<Option value="40000" key="40000">40000</Option>
+							<Option :value="10000" :key="10000">10000</Option>
+							<Option :value="20000" :key="20000">20000</Option>
+							<Option :value="30000" :key="30000">30000</Option>
+							<Option :value="40000" :key="40000">40000</Option>
 						</Select>
 					</Form-item>
 					</Form-item>
@@ -106,7 +107,7 @@
 			</Form>
 			<div>
 				<Button @click.native="reset">重置</Button>
-				<Button type="primary" @click.native="save">发布</Button>
+				<Button type="primary" @click.native="save">保存</Button>
 			</div>
 		</Card>
 	</div>
@@ -122,18 +123,19 @@
 		data() {
 			return {
 				formValidate: {
-					company: '信宜通',
-					jobName: '财务总监',
-					jobType: '全职',
-					city: '深圳',
-					workLocation: '南山区高新南1道8号创维大厦',
-					workTime: '10年以上',
-					salary: '10000',
-					jobDesc: '测试',
-					expiryDate: '2018-07-10T01:12:03.726Z',
-					degree: '硕士',
-					skill: '高级',
+					company: '',
+					jobName: '',
+					jobType: '',
+					city: '',
+					workLocation: '',
+					workTime: '',
+					salary: '',
+					jobDesc: '',
+					expiryDate: '',
+					degree: '',
+					skill: '',
 					hireNumber: 1,
+					id: this.$route.params.id,
 				},
 				ruleValidate: {
 					key_text: [
@@ -150,16 +152,8 @@
 		methods: {
 			save() {
 				console.log(1, this.formValidate)
-				const that = this
-				let params = {}
-				_.forEach(this.formValidate, (val, key) => {
-					if (!_.isEmpty(val)) {
-						params[key] = val
-					}
-				})
-				console.log(2, params)
-				this.addJob(this.formValidate).then((res) => {
-					this.$Message.success('新增成功')
+				this.editJob(this.formValidate).then((res) => {
+					this.$Message.success('修改成功')
 				})
 			},
 			reset() {
@@ -167,23 +161,8 @@
 			},
 		},
 		created() {
-			const self = this
-			this.getUserInfo(this.userInfo.uid).then((res) => {
-				console.log(res.data)
-				if (res.data[0].company) {
-					this.formValidate.company = res.data[0].company
-				} else {
-					this.$Modal.confirm({
-						title: '请先完善个人及公司信息',
-						content: '<p>帮你跳转到完善信息页面?</p>',
-						onOk: () => {
-							self.$router.push('/perfectinfo')
-						},
-						onCancel: () => {
-							self.$router.push('/')
-						},
-					})
-				}
+			this.getJobs({jobId: this.$route.params.id}, 1, 1).then((res) => {
+				this.formValidate = res.data[0]
 			})
 		},
 		mixins: [FnMixins, ApiMixin],
